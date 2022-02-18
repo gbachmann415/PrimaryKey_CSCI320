@@ -1,0 +1,120 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\title{Movie List}
+
+\date{\today} 
+
+\author{Primary Keys \\
+aew1756: Ari Wisenburn\\
+        txb9274: Milo Berry\\
+        ggb6130: Gunnar Bachmann\\
+        np7437: Noah Pelletier\\
+        }
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+Our domain is the Movie Domain which will follow a very similar outline as the Music domain. Rather than users creating collections of music, it will be of movies instead. Users will be able to create collections of movies and search for movies based off of name, release date, cast members, studio, and genre. Users will also be able to sort movies, add and delete movies from their collection, rate movies, and even watch movies individually (or play an entire collection). Following and unfollowing friends will function the same as our primary domain.
+
+Our program will be primarily written in Python and we will be using a PostgreSQL database. User interaction will be driven from the command line that will be extended to a GUI given enough time.
+
+\section{Design}
+\subsection{Conceptual Model}
+\includegraphics[scale=0.75]{ERDiagram.pdf} \\
+Most of our ER Diagram is created directly from the requirements. \\\\
+The biggest consideration made in our EER diagram was our decision to break up \emph{People} into the specializations \emph{Actor} and \emph{Director}. Since the requirements state both of these fields must be searchable separately and movies must have only a single director, we decided to create these specializations with their own separate relationships to the \emph{Movie} entity. This will allow us to easily split out both of these entities into their own separate queries to optimize performance. \\\\
+Another consideration of the table, was the inclusion of the \emph{Date Watched} attribute in the \emph{Watches} relationship. The requirements mention that in Phase 4, we need to be able to find the most popular movies in the past 90 days as well as allow users to mark every time they play a movie, we decided to include the date they marked the movie as watched to allow us to easily perform these queries as well as have multiple entries for the same movie from the same user. \\\\
+\subsection{Reduction to tables}
+\includegraphics[scale=0.75]{reduction to tables.pdf} \\
+For the \emph{Person} entity, because the specializations have no distinct attributes and only their relationship to the \emph{Movie} entity was different, we created a single table \emph{Person} with a required field of \emph{Type} to distinguish between \emph{Actor} and \emph{Director}. This does come with the drawback of having duplicate entries for an actor that is also a director, but because we moved the attribute \emph{Name} into its own table, there should be no anomalies when updating. Looking at the relationships with the \emph{Person} entity, \emph{Acts In} became its own table since it is an N:M relationship while \emph{Directs} turned into the field \emph{Director Id} within the \emph{Movie} table since movies can only have a single director. The primary key for the \emph{ActsIn} table is a combination of the \emph{Movie Id} and \emph{Person Id} since these two elements will always be unique together.\\\\
+Regarding the \emph{Name} table, since \emph{Name} is a composite attribute made up of \emph{First Name} and \emph{Last Name}, it was split off into its own table. \\\\
+Moving forward to the \emph{Movie} entity itself, since \emph{Genre} is a multi-valued attribute, it was moved into its own table \emph{MovieGenre} with the primary key being composed of the genre name itself and the Movie Id it is associated with since the combination of these two elements are unique. The \emph{Average User Rating} was disregarded in the table since it is a derived attribute and will be calculated when needed. \\\\
+Then looking at the \emph{Studio} entity, the entity itself was converted into a simple table with all its attributes. But the \emph{Funds} relationship between the \emph{Movie} entity and the \emph{Studio} entity was moved into its own separate table called \emph{Funds} since they have an N:M relationship. \\\\
+Next looking at the \emph{User} entity, the entity was mapped to its own table with all its attributes except the composite \emph{Name} attribute. Since we already have a \emph{Name} table, the \emph{User} table gets the attribute \emph{Name Id} as a reference to this table. Then translating the relationship \emph{Watches} between the \emph{User} entity and the \emph{Movie} entity, this was moved into its own separate table named \emph{Watched} with the relationship attributes as well as foreign keys to the \emph{Movie Id}, \emph{Date Watched}, and \emph{Username} which make up the primary key of the table. The \emph{User} entity also has the relationship \emph{Follow} that was converted to the table \emph{Following} since the relationship is M:N and with the primary key comprised of the \emph{Collection Id} and \emph{Movie Id}\\\\
+Lastly, discussing the \emph{Collection} entity, this was transformed into its own table with only the attributes \emph{Collection Id} and \emph{Name} since the other 2 attributes are derived attributes. This table also includes a foreign key \emph{Username} to reference the user that created it since collections can only be created by a single user. Then its relationship \emph{Comprises} was turned into its own table \emph{MoviesInCollection} since the relationship is N:M which has the \emph{Collection Id} and \emph{Movie Id} as its primary key.
+\subsection{Data Requirements/Constraints}
+Within the \emph{Person} entity, the \emph{Name} and \emph{Id} for each person is required and unique. Additionally, because our reduction to tables for the \emph{Person} entity includes the field \emph{Type} to map to the total-participation and disjoint specialization, the \emph{Type} field is required with the selection of either director or actor. \\\\
+For the \emph{Studio} entity, the \emph{Studio Id} is required and unique. The name is also required. \\\\
+For the \emph{Movie} entity, the attribute \emph{Movie Id} is required and unique. The other required attributes are \emph{MPAA Rating}, \emph{Release Date}, \emph{Runtime}, and \emph{Genre}. The relationships \emph{Funds}. \emph{Acts In} and \emph{Directs} all have total participation meaning each \emph{Movie} entity must have at least one entry in these relationship tables. The \emph{MPAA Rating} must be one of the following: G, PG, PG-13, R, or NC-17. \\\\
+For the \emph{Watches} relationship, the \emph{Rating} attribute must be one of the following: 1, 2, 3, 4, or 5. Both of this relationship's attributes are required. \\\\
+For the \emph{Collection} entity, the \emph{Collection Id} is required and unique. \emph{Name} is also a required attribute. The reduction to table for this entity includes a required \emph{User Id} attribute as well.\\\\
+Lastly, for the \emph{User} entity, the \emph{Username} and \emph{Email} attributes are required and unique. The \emph{Password}, \emph{Name}, \emph{Creation Date}, and \emph{Last Access Date} are also required.
+\subsection{Sample instance data}
+Use this section to include sample of entities for every entity type in your EER diagram. Include also sample of relationships for every relationship type. For example, assume you have an entity type \emph{Course} in your EER diagram with the attribute types \emph{ID} and \emph{name}. A sample of a \emph{Course} entity can be \emph{CSCI320, Principles of Data Management}.\\
+
+Include 5 samples for every entity type and relationship type.
+
+\section{Implementation}
+Use this section to describe the overall implementation of your database. Include samples of SQL statements to create the tables (DDL statements) and a description of the ETL process, including examples of the SQL insert statements used to populate each table initially.
+
+Include also sample of the SQL insert statements used in your application program to insert new data in the database. Finally, add an appendix of all the SQL statements created in your application during Phase 4 and a description of the indexes created to boost the performance of your application.
+\section{Data Analysis}
+\subsection{Hypothesis}
+Use this section to state the objectives of your data analysis; what are the observations you are expecting to find. Note that your final
+observations may end up differing from your proposal, that is also a valid result.
+\subsection{Data Preprocessing}
+Use this section to describe the preprocessing steps you have performed to prepare the data for the analytics. Preprocessing steps may include: data cleaning (e.g., filling missing values, fixing outliers), formatting the data (e.g., resolving issues like inconsistent abbreviations, multiples date format in the data), combining or splitting fields, add new information (data enrichness).
+
+Explain how the data was extracted from the database for the analysis; if you used complex queries or views, or both.
+\subsection{Data Analytics \& Visualization}
+Use this section to explain the process/techniques used to analyze the data, use data visualization to present the results, and explain them.
+\subsection{Conclusions}
+Use this section to explain the conclusions drawn from your data analysis.\\
+\section{Lessons Learned}
+Use this section to describe the issues you faced during the project and how you overcame them. Also, describe what you learned during this effort; this section, like the others, plays a critical component in determining your final grade.\\
+
+{\bf The next subsection is meant to provide you with some help in
+  dealing with figures, tables and references, as these are sometimes
+  hard for folks new to \LaTeX. Your figures and tables
+  may be distributed all over your paper (not just here), as appropriate for your paper.
+
+  Please delete the following subsection before you make any submissions!}
+
+\subsection{Tables, Figures, and Citations/References}
+
+Tables, figures, and references in technical
+documents need to be presented correctly. As many students
+are not familiar with using these objects, here is a quick
+guide extracted from the ACM style guide.
+
+\begin{table}
+\centering
+\caption{Feelings about Issues}
+\label{SAMPLE TABLE}
+\begin{tabular}{|l|r|l|} \hline
+Flavor&Percentage&Comments\\ \hline
+Issue 1 &  10\% & Loved it a lot\\ \hline
+Issue 2 &  20\% & Disliked it immensely\\ \hline
+Issue 3 &  30\% & Didn't care one bit\\ \hline
+Issue 4 &  40\% & Duh?\\ \hline
+\end{tabular}
+\end{table}
+
+
+First, note that figures in the report must be original, that is,
+created by the student: please do not cut-and-paste figures from any
+other paper or report you have read or website. Second, if you do need to include figures,
+they should be handled as demonstrated here. State that
+Figure~\ref{SAMPLE FIGURE} is a simple illustration used in the ACM
+Style sample document. Never refer to the figure below (or above)
+because figures may be placed by \LaTeX{} at any appropriate location
+that can change when you recompile your source $.tex$
+file. Incidentally, in proper technical writing (for reasons beyond
+the scope of this discussion), table captions are above the table and
+figure captions are below the figure. So the truly junk information
+about flavors is shown in Table~\ref{SAMPLE TABLE}.
+
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[width=1.5in]{images/fly.jpg}
+\caption{A sample black \& white graphic (JPG).}
+\label{SAMPLE FIGURE}
+\end{center}
+\end{figure}
+
+\section{Resources}
+Include in this section the resources you have used in your project beyond the normal code development such as data sets or data analytic tools (i.e. Weka, R).
+\end{document}
