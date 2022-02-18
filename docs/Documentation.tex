@@ -43,9 +43,89 @@ For the \emph{Watches} relationship, the \emph{Rating} attribute must be one of 
 For the \emph{Collection} entity, the \emph{Collection Id} is required and unique. \emph{Name} is also a required attribute. The reduction to table for this entity includes a required \emph{User Id} attribute as well.\\\\
 Lastly, for the \emph{User} entity, the \emph{Username} and \emph{Email} attributes are required and unique. The \emph{Password}, \emph{Name}, \emph{Creation Date}, and \emph{Last Access Date} are also required.
 \subsection{Sample instance data}
-Use this section to include sample of entities for every entity type in your EER diagram. Include also sample of relationships for every relationship type. For example, assume you have an entity type \emph{Course} in your EER diagram with the attribute types \emph{ID} and \emph{name}. A sample of a \emph{Course} entity can be \emph{CSCI320, Principles of Data Management}.\\
+\subsubsection{Person Entity}
+\emph{1, Milo, Berry} \\
+\emph{2, Theo, Cat} \\
+\emph{3, Ari, Wisenburn} \\
+\emph{4, Gunnar, Bachmann} \\
+\emph{5, Noah, Pelletier}
 
-Include 5 samples for every entity type and relationship type.
+\subsubsection{Acts In Relationship}
+Person \emph{Milo Berry} acts in Movie \emph{1917} \\
+Person \emph{Ari Wisenburn} acts in Movie \emph{1917} \\
+Person \emph{Gunnar Bachmann} acts in Movie \emph{Spider-Man: Far From Home} \\
+Person \emph{Gunnar Bachmann} acts in Movie \emph{Uncharted} \\
+Person \emph{Theo Cat} acts in Movie \emph{How to be a Cat}
+
+\subsubsection{Directs Relationship}
+Person \emph{Milo Berry} directs Movie\emph{The Cursed} \\
+Person \emph{Ari Wisenburn} directs Movie \emph{Scream} \\
+Person \emph{Noah Pelletier} directs Movie\emph{Studio 666} \\
+Person \emph{Noah Pelletier} directs Movie\emph{Dog} \\
+Person \emph{Theo Cat} directs Movie\emph{How to be a Cat: The Sequel}
+
+\subsubsection{Movie Entity}
+\emph{1, Uncharted, PG-13, 2/18/2022, 123 min, NULL, \{Action, Comedy\}} \\
+\emph{2, 1917, R, 1/10/2020, 142 min, 4.84, \{War, Dark\}} \\
+\emph{3, Spider-Man, PG-13, 4/1/2002, 94 min, 3.42, \{Superhero\}} \\
+\emph{4, Scream, R, 10/31/1993, 132 min, 4.56, \{Slasher, Horror\}} \\
+\emph{5, Make Happy, PG-13, 2/18/2016, 83 min, 4.10, \{Stand-up, Comedy\}}
+
+\subsubsection{Studio Entity}
+\emph{1, Fake Studio} \\
+\emph{2, Another Fake Studio} \\
+\emph{3, Studio 666} \\
+\emph{4, Theo's Studio} \\
+\emph{5, Final Studio}
+
+\subsubsection{Funds Relationship}
+Studio \emph{Fake Studio} funds Movie \emph{Uncharted} \\
+Studio \emph{Another Fake Studio} funds Movie \emph{Uncharted} \\
+Studio \emph{Fake Studio} funds Movie \emph{1917} \\
+Studio \emph{Studio 123} funds Movie \emph{Dog} \\
+Studio \emph{Theo's Studio} funds Movie \emph{Cat Food: The Movie}
+
+\subsubsection{User Entity}
+\emph{miloblueberry, Milo, Berry, 1/2/2019, 2/18/2022, fakepassword, txb9274@rit.edu} \\
+\emph{theo-is-perfect, Theo, Cat, 1/23/2020, 2/10/2021, wetfoodisbest, cat@cat.com}\\
+\emph{ari\_wiserthanyou, Ari, Wisenburn, 10/2/2017, 1/1/2022, heylookapassword, ari@rit.edu} \\
+\emph{gunnarwasinuncharted, Gunnar, Bachmann, 10/21/2020, 2/18/2022, gunnarwasinuncharted, gunnar@rit.edu} \\
+\emph{noah-in-the-boat, Noah, Pelletier, 7/2/2021, 2/1/2022, fakepassword, noah@rit.edu}
+
+\subsubsection{Watches Relationship}
+Person \emph{Milo Berry} watches Movie \emph{1917}: \emph{Rating}: 5, \emph{Date Watched}: 2/3/2019\\
+Person \emph{Ari Wisenburn} watches Movie \emph{Scream}: \emph{Rating}: 3, \emph{Date Watched}: 2/13/2021 \\
+Person \emph{Milo Berry} watches \emph{1917}: \emph{Rating}: 5, \emph{Date Watched}: 12/5/2020 \\
+Person \emph{Gunnar Bachmann} watches \emph{Scream}: \emph{Rating}: 4, \emph{Date Watched}: 10/31/2022 \\
+Person \emph{Gunnar Bachmann} watches \emph{Uncharted} : \emph{Rating}: 2, \emph{Date Watched}: 2/3/2022
+
+\subsubsection{Follow Relationship}
+User \emph{miloblueberry} follows User \emph{ari\_wiserthanyou} \\
+User \emph{ari\_wiserthanyou} follows User \emph{noah-in-the-boat} \\
+User \emph{noah-in-the-boat} follows User \emph{ari\_wiserthanyou} \\
+User \emph{miloblueberry} follows User \emph{theo-is-perfect} \\
+User \emph{theo-is-perfect} follows User \emph{cat-food-is-the-best}
+
+\subsubsection{Collection Entity}
+\emph{1, Horror Movies, 120 min, 2 movies} \\
+\emph{2, Slasher Films, 5001 min, 12 movies} \\
+\emph{3, Comedies, 290 min, 5 movies} \\
+\emph{4, Stand-up, 67 min, 1 movie} \\
+\emph{5, Empty Collection, 0 min, 0 movies}
+
+\subsubsection{Creates Relationship}
+User \emph{miloblueberry} creates Collection \emph{Horror Films} \\
+User \emph{ari\_wiserthanyou} creates Collection \emph{Horror Films} \\
+User \emph{noah-in-the-boat} creates Collection \emph{Funny Comedies} \\
+User \emph{miloblueberry} creates Collection \emph{Unfunny Comedies} \\
+User \emph{theo-is-perfect} creates Collection \emph{Movies about Cats}
+
+\subsubsection{Comprises Relationship}
+Movie \emph{Scream} comprises Collection \emph{Slasher Films} \\
+Movie \emph{Make Happy} comprises Collection \emph{Funny Comedies} \\
+Movie \emph{The Addams Family} comprises Collection \emph{Funny Comedies} \\
+Movie \emph{Homeward Bound} comprises Collection \emph{Dog Movies} \\
+Movie \emph{Scream} comprises Collection \emph{Horror Movies} 
 
 \section{Implementation}
 Use this section to describe the overall implementation of your database. Include samples of SQL statements to create the tables (DDL statements) and a description of the ETL process, including examples of the SQL insert statements used to populate each table initially.
