@@ -8,3 +8,12 @@ Movie Domain
 - Gunnar Bachmann
 - Ari Wisenburn
 - Noah Pelletier
+
+## config.py
+- This program requires a config.py file in the /src directory
+- Below is the template for the config.py file
+```python
+DB_USERNAME = ""
+DB_PASSWORD = ""
+DB_NAME = ""
+```
