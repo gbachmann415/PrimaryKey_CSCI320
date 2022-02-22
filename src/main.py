@@ -11,6 +11,7 @@ Description:
 
 import psycopg2
 from sshtunnel import SSHTunnelForwarder
+import os
 
 
 # TODO storing credentials. environment variables, gitignore a config file/folder, etc...
@@ -18,7 +19,10 @@ username = "YOUR_CS_USERNAME"
 password = "YOUR_CS_PASSWORD"
 dbName = "YOUR_DB_NAME"
 
-
+"""
+Establish a connection to the database with username, password, and database name.
+Failed connection will result in a connection failed output to the user.
+"""
 try:
     with SSHTunnelForwarder(('starbug.cs.rit.edu', 22),
                             ssh_username=username,
@@ -38,6 +42,16 @@ try:
         conn = psycopg2.connect(**params)
         curs = conn.cursor()
         print("Database connection established")
-        conn.close()
+        # conn.close()
 except:
     print("Connection failed")
+    # TODO do we want to end program if connection fails by adding an exit statement?
+
+
+def main():
+    # body of main function will go before the connection close call.
+    conn.close()
+
+
+if __name__ == '__main__':
+    main()
