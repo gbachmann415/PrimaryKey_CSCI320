@@ -1,6 +1,8 @@
 """
 CSCI.320 Project: Movie Domain
 
+File: main.py
+
 Authors: - Milo Berry
          - Gunnar Bachmann
          - Ari Wisenburn
