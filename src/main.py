@@ -11,7 +11,6 @@ Description:
 from config import DB_USERNAME, DB_PASSWORD, DB_NAME
 import psycopg2
 from sshtunnel import SSHTunnelForwarder
-import os
 
 
 username = DB_USERNAME
