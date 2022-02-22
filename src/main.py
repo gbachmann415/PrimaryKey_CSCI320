@@ -37,7 +37,6 @@ try:
             'port': server.local_bind_port
         }
 
-
         conn = psycopg2.connect(**params)
         curs = conn.cursor()
         print("Database connection established")
@@ -48,8 +47,14 @@ except:
 
 
 def main():
+    """
+    [Description goes here]
+    :return: None
+    """
+    #
     # body of main function will go before the connection close call.
-    conn.close()
+    #
+    conn.close()  # Close the connection to the database
 
 
 if __name__ == '__main__':
