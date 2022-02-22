@@ -8,16 +8,15 @@ Authors: - Milo Berry
 
 Description:
 """
-
+from config import DB_USERNAME, DB_PASSWORD, DB_NAME
 import psycopg2
 from sshtunnel import SSHTunnelForwarder
 import os
 
 
-# TODO storing credentials. environment variables, gitignore a config file/folder, etc...
-username = "YOUR_CS_USERNAME"
-password = "YOUR_CS_PASSWORD"
-dbName = "YOUR_DB_NAME"
+username = DB_USERNAME
+password = DB_PASSWORD
+dbName = DB_NAME
 
 """
 Establish a connection to the database with username, password, and database name.
