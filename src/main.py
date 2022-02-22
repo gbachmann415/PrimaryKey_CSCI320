@@ -22,6 +22,7 @@ Establish a connection to the database with username, password, and database nam
 Failed connection will result in a connection failed output to the user.
 """
 try:
+    print("Attempting to establish database connection...")
     with SSHTunnelForwarder(('starbug.cs.rit.edu', 22),
                             ssh_username=username,
                             ssh_password=password,
