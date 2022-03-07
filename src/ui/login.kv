@@ -1,0 +1,36 @@
+<Login>:
+    rows: 5
+    cols: 1
+
+    username: username
+    userpw: userpw
+
+    BoxLayout:
+        size_hint_y: None
+        height: '32dp'
+        Label:
+            text: 'User ID'
+
+        TextInput:
+            id: username
+
+    BoxLayout:
+        size_hint_y: None
+        height: '32dp'
+        Label:
+            text: 'Password'
+
+        TextInput:
+            id: userpw
+            password: True
+
+    Button:
+        text: 'Login'
+        on_press: root.login_pressed(self)
+        size_hint_y: None
+        height: '32dp'
+    Button:
+        text: 'Create Account'
+        on_press: root.create_account(self)
+        size_hint_y: None
+        height: '32dp'

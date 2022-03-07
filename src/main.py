@@ -10,10 +10,11 @@ Authors: - Milo Berry
 
 Description:
 """
+
 from config import DB_USERNAME, DB_PASSWORD, DB_NAME
 import psycopg2
 from sshtunnel import SSHTunnelForwarder
-
+from src.ui import application as ui
 
 username = DB_USERNAME
 password = DB_PASSWORD
@@ -47,7 +48,6 @@ except:
     print("Connection failed")
     # TODO do we want to end program if connection fails by adding an exit statement?
 
-
 def main():
     """
     [Description goes here]
@@ -56,6 +56,7 @@ def main():
     #
     # body of main function will go before the connection close call.
     #
+    ui.MovieApplication().run()
     conn.close()  # Close the connection to the database
 
 

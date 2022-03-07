@@ -1,0 +1,64 @@
+<AccountScreen>:
+    rows: 7
+    cols: 1
+
+    username: username
+    userpw: userpw
+    firstname: firstname
+    lastname: lastname
+    email: email
+
+    BoxLayout:
+        size_hint_y: None
+        height: '32dp'
+        Label:
+            text: 'Username'
+
+        TextInput:
+            id: username
+
+    BoxLayout:
+        size_hint_y: None
+        height: '32dp'
+        Label:
+            text: 'Password'
+
+        TextInput:
+            id: userpw
+            password: True
+
+    BoxLayout:
+        size_hint_y: None
+        height: '32dp'
+        Label:
+            text: 'First Name'
+
+        TextInput:
+            id: firstname
+
+    BoxLayout:
+        size_hint_y: None
+        height: '32dp'
+        Label:
+            text: 'Last Name'
+
+        TextInput:
+            id: lastname
+
+    BoxLayout:
+        size_hint_y: None
+        height: '32dp'
+        Label:
+            text: 'Email'
+
+        TextInput:
+            id: email
+
+    BoxLayout:
+        size_hint_y: None
+        height: '32dp'
+        Button:
+            text: 'Create Account'
+            on_press: root.create_account(self)
+            size_hint_y: None
+            height: '32dp'
