@@ -10,6 +10,7 @@ class Display(GridLayout):
     super(Display, self).__init__(**kwargs)
     self.child = login.Login()
     self.rows = 1
+    self.previous_screens = []
     self.add_widget(self.child)
 
   def update_child(self, child_name, userid=None):
@@ -18,10 +19,11 @@ class Display(GridLayout):
     :param child_name: the name of the child to switch to
     :param userid: the user id of the person logged in
     """
+    self.previous_screens.append(self.child)
+
     child = None
     if child_name == 'HomeScreen':
       child = home_screen.HomeScreen()
-      print(userid)
       child.update_user(userid)
 
     if child_name == 'AccountScreen':
@@ -29,4 +31,12 @@ class Display(GridLayout):
 
     self.clear_widgets()
     self.child = child
+    self.add_widget(self.child)
+
+  def return_to_prev_screen(self):
+    """
+    Returns the user to the last screen they saw
+    """
+    self.clear_widgets()
+    self.child = self.previous_screens.pop()
     self.add_widget(self.child)

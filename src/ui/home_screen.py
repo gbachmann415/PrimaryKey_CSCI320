@@ -1,5 +1,5 @@
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
+from src.ui import back_button
 
 
 class HomeScreen(GridLayout):
@@ -9,6 +9,7 @@ class HomeScreen(GridLayout):
   def __init__(self, **kwargs):
     super(HomeScreen, self).__init__(**kwargs)
     self.userid = None
+    self.add_widget(back_button.BackButton())
 
   def update_user(self, user_id):
     """
@@ -16,4 +17,13 @@ class HomeScreen(GridLayout):
     :param user_id: the user id to update to
     """
     self.userid = user_id
-    self.add_widget(Label(text=str(self.userid)))
+    print(self.userid)
+
+  def go_to_collections(self, button):
+    return
+
+  def go_to_following(self, button):
+    return
+
+  def search_movies(self, button):
+    return

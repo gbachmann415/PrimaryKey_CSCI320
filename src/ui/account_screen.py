@@ -1,6 +1,7 @@
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from src import user
+from src.ui import back_button
 
 
 class AccountScreen(GridLayout):
@@ -9,6 +10,7 @@ class AccountScreen(GridLayout):
   """
   def __init__(self, **kwargs):
     super(AccountScreen, self).__init__(**kwargs)
+    self.add_widget(back_button.BackButton())
 
   def create_account(self, button):
     """

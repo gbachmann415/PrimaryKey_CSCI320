@@ -11,4 +11,5 @@ class MovieApplication(App):
     Builder.load_file('ui/login.kv')
     Builder.load_file('ui/home_screen.kv')
     Builder.load_file('ui/account_screen.kv')
+    Builder.load_file('ui/back_button.kv')
     return display.Display()

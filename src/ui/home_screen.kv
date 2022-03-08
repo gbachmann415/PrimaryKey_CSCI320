@@ -1,3 +1,18 @@
 <HomeScreen>:
-    rows: 1
+    rows: 3
     cols: 1
+    BoxLayout:
+        size_hint_y: None
+        height: '400dp'
+        Button:
+            text: 'View Collections'
+            on_press: root.go_to_collections(self)
+        Button:
+            text: 'View Following'
+            on_press: root.go_to_following(self)
+        Button:
+            text: 'Search Movies'
+            on_press: root.search_movies(self)
+    Label:
+        size_hint_y: None
+        height: '32dp'
