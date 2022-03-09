@@ -1,0 +1,36 @@
+<Collection>:
+    rows: 8
+    cols: 1
+
+    newcollectionname: newcollectionname
+
+    BoxLayout:
+    Label:
+        size_hint_y: None
+        height: '32dp'
+    BoxLayout:
+        size_hint_y: None
+        height: '32dp'
+        TextInput:
+            id: newcollectionname
+        Button:
+            text: 'Change Collection Name'
+            on_press: root.update_collection_name(self)
+    Button:
+        size_hint_y: None
+        height: '32dp'
+        text: 'Add Movie to Collection'
+        on_press: root.switch_to_search(self)
+    Button:
+        size_hint_y: None
+        height: '32dp'
+        text: 'Delete Collection'
+        on_press: root.delete_collection(self)
+    Button:
+        size_hint_y: None
+        height: '32dp'
+        text: 'Watch Collection'
+        on_press: root.watch_collection(self)
+    Label:
+        size_hint_y: None
+        height: '32dp'

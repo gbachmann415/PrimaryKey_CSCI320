@@ -1,0 +1,22 @@
+<CollectionsScreen>:
+    cols: 1
+    rows: 4
+
+    newcollection: newcollection
+
+    BoxLayout:
+        size_hint_y: None
+        height: '400dp'
+    Label:
+        size_hint_y: None
+        height: '32dp'
+    BoxLayout:
+        size_hint_y: None
+        height: '32dp'
+        TextInput:
+            id: newcollection
+        Button:
+            size_hint_y: None
+            height: '32dp'
+            text: 'Add Collection'
+            on_press: root.add_collection(self)

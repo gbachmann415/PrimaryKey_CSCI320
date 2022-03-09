@@ -17,10 +17,9 @@ class HomeScreen(GridLayout):
     :param user_id: the user id to update to
     """
     self.userid = user_id
-    print(self.userid)
 
   def go_to_collections(self, button):
-    return
+    self.parent.update_child('CollectionsScreen', self.userid)
 
   def go_to_following(self, button):
     return

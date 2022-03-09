@@ -10,3 +10,5 @@ Authors: - Milo Berry
 
 Description:
 """
+def watch_movie(movie_id, user_id):
+  return
