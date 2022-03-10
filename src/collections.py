@@ -12,10 +12,10 @@ Description:
 """
 
 
-def get_collections_for_user(user_id):
+def get_collections_for_user(username):
   """
   Gets a list of collections for given user
-  :param user_id: the user id of the user to get collections for
+  :param username: the username of the user to get collections for
   """
   return [
     {'collection_id': 1, 'name': 'Test Name', 'numMovies': 2, 'lengthHr': 3, 'lengthMin': 48},

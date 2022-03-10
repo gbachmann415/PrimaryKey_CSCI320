@@ -8,21 +8,21 @@ class HomeScreen(GridLayout):
   """
   def __init__(self, **kwargs):
     super(HomeScreen, self).__init__(**kwargs)
-    self.userid = None
+    self.username = None
     self.add_widget(back_button.BackButton())
 
-  def update_user(self, user_id):
+  def update_user(self, username):
     """
     Updates the user id of the currently logged in user
-    :param user_id: the user id to update to
+    :param username: the user id to update to
     """
-    self.userid = user_id
+    self.username = username
 
   def go_to_collections(self, button):
-    self.parent.update_child('CollectionsScreen', self.userid)
+    self.parent.update_child('CollectionsScreen', self.username)
 
   def go_to_following(self, button):
     return
 
   def search_movies(self, button):
-    return
+    self.parent.update_child('SearchScreen', self.username)

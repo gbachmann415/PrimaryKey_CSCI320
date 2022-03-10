@@ -10,5 +10,42 @@ Authors: - Milo Berry
 
 Description:
 """
-def watch_movie(movie_id, user_id):
-  return
+
+
+def get_movie(movie_id, username):
+  return {
+    'title': 'Test Title',
+    'mpaa_rating': 'PG-13',
+    'runtimeHr': 2,
+    'runtimeMin': 4,
+    'releaseDate': '04-05-2020',
+    'lastWatched': None,
+    'rating': None
+  }
+
+
+def watch_movie(movie_id, username):
+  return {
+    'title': 'Test Title',
+    'mpaa_rating': 'PG-13',
+    'runtimeHr': 2,
+    'runtimeMin': 4,
+    'releaseDate': '04-05-2020',
+    'lastWatched': '04-05-2020',
+    'rating': 3
+  }
+
+
+def rate_movie(movie_id, username, rating):
+  print(rating)
+  return {
+    'title': 'Test Title',
+    'mpaa_rating': 'PG-13',
+    'runtimeHr': 2,
+    'runtimeMin': 4,
+    'releaseDate': '04-05-2020',
+    'lastWatched': '04-05-2020',
+    'rating': 3
+  }
+
+

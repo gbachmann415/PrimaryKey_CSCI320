@@ -1,10 +1,15 @@
+<RatingDropdown>:
+
+
 <Movie>:
     rows: 4
     cols: 1
 
     BoxLayout:
         size_hint_y: None
-        height: '400dp'
-    Label:
+        height: '100dp'
+    Button:
+        text: 'Mark Watched'
+        on_press: root.watch_movie(self)
         size_hint_y: None
         height: '32dp'

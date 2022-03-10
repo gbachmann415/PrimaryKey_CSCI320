@@ -17,15 +17,14 @@ class AccountScreen(GridLayout):
     Creates a new user account on button click
     :param button: the button clicked
     """
-    user_id = user.create_user(
+    username = user.create_user(
       self.username.text,
       self.userpw.text,
       self.firstname.text,
       self.lastname.text,
       self.email.text
     )
-    if user_id is not None:
-      userid = 1
-      self.parent.update_child('HomeScreen', userid)
+    if username is not None:
+      self.parent.update_child('HomeScreen', username)
     else:
       self.add_widget(Label(text='Username is already taken'))

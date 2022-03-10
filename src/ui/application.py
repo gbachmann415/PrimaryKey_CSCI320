@@ -15,4 +15,6 @@ class MovieApplication(App):
     Builder.load_file('ui/collections_screen.kv')
     Builder.load_file('ui/collection.kv')
     Builder.load_file('ui/movie.kv')
+    Builder.load_file('ui/search_screen.kv')
+    Builder.load_file('ui/movies_screen.kv')
     return display.Display()
