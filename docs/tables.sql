@@ -106,5 +106,90 @@ create table p320_21.movie_genre
         primary key (movie_id, genre_id)
 );
 ----------------------------------------------------------------------------------
---  TABLE
+-- ACTS IN TABLE
 ----------------------------------------------------------------------------------
+create table p320_21.acts_in
+(
+    movie_id  int
+        constraint acts_in_movie__fk
+            references p320_21.movie,
+    person_id int
+        constraint acts_in_person__fk
+            references p320_21.person,
+    constraint acts_in_pk
+        primary key (movie_id, person_id)
+);
+----------------------------------------------------------------------------------
+-- FUNDS TABLE
+----------------------------------------------------------------------------------
+create table p320_21.funds
+(
+    movie_id  int
+        constraint funds_movie_movie_id_fk
+            references p320_21.movie,
+    studio_id int
+        constraint funds_studio_studio_id_fk
+            references p320_21.studio,
+    constraint funds_pk
+        primary key (movie_id, studio_id)
+);
+----------------------------------------------------------------------------------
+-- COLLECTION TABLE
+----------------------------------------------------------------------------------
+create table p320_21.collection
+(
+    collection_id int not null
+        constraint collection_pk
+            primary key,
+    name          varchar,
+    username      int
+        constraint collection_user_user_id_fk
+            references p320_21."user"
+);
+
+create unique index collection_collection_id_uindex
+    on p320_21.collection (collection_id);
+----------------------------------------------------------------------------------
+-- MOVIES IN COLLECTION TABLE
+----------------------------------------------------------------------------------
+create table p320_21.movies_in_collection
+(
+    collection_id int
+        constraint movies_in_collection_collection_collection_id_fk
+            references p320_21.collection,
+    movie_id      int
+        constraint movies_in_collection_movie_movie_id_fk
+            references p320_21.movie,
+    constraint movies_in_collection_pk
+        primary key (collection_id, movie_id)
+);
+----------------------------------------------------------------------------------
+-- FOLLOWING TABLE
+----------------------------------------------------------------------------------
+create table p320_21.following
+(
+    username           int
+        constraint following_user_user_id_fk
+            references p320_21."user",
+    following_username int
+        constraint following_user_user_id_fk_2
+            references p320_21."user",
+    constraint following_pk
+        primary key (username, following_username)
+);
+----------------------------------------------------------------------------------
+-- WATCHED TABLE
+----------------------------------------------------------------------------------
+create table p320_21.watched
+(
+    username     int
+        constraint watched_user_user_id_fk
+            references p320_21."user",
+    movie_id     int
+        constraint watched_movie_movie_id_fk
+            references p320_21.movie,
+    date_watched date,
+    star_rating  int,
+    constraint watched_pk
+        primary key (username, movie_id, date_watched)
+);
