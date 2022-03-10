@@ -43,7 +43,7 @@ create unique index name_id_uindex
 ----------------------------------------------------------------------------------
 create table p320_21."user"
 (
-    user_id          int not null
+    username        varchar not null
         constraint user_pk
             primary key,
     name_id          int
@@ -55,8 +55,8 @@ create table p320_21."user"
     last_access_date timestamp
 );
 
-create unique index user_user_id_uindex
-    on p320_21."user" (user_id);
+create unique index user_username_uindex
+    on p320_21."user" (username);
 ----------------------------------------------------------------------------------
 -- PERSON TABLE
 ----------------------------------------------------------------------------------
@@ -142,8 +142,8 @@ create table p320_21.collection
         constraint collection_pk
             primary key,
     name          varchar,
-    username      int
-        constraint collection_user_user_id_fk
+    username      varchar
+        constraint collection_user_username_fk
             references p320_21."user"
 );
 
@@ -168,11 +168,11 @@ create table p320_21.movies_in_collection
 ----------------------------------------------------------------------------------
 create table p320_21.following
 (
-    username           int
-        constraint following_user_user_id_fk
+    username           varchar
+        constraint following_user_username_fk
             references p320_21."user",
-    following_username int
-        constraint following_user_user_id_fk_2
+    following_username varchar
+        constraint following_user_username_fk_2
             references p320_21."user",
     constraint following_pk
         primary key (username, following_username)
@@ -182,8 +182,8 @@ create table p320_21.following
 ----------------------------------------------------------------------------------
 create table p320_21.watched
 (
-    username     int
-        constraint watched_user_user_id_fk
+    username     varchar
+        constraint watched_user_username_fk
             references p320_21."user",
     movie_id     int
         constraint watched_movie_movie_id_fk
