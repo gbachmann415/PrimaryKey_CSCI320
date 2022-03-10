@@ -15,9 +15,9 @@ class Login(GridLayout):
     Tries to log in the user based on tbe textboxes and either switches to home page or displays error message
     :param button: the button pressed
     """
-    user_id = user.login_user(self.username.text, self.userpw.text)
-    if user_id is not None:
-      self.parent.update_child('HomeScreen', user_id)
+    username = user.login_user(self.username.text, self.userpw.text)
+    if username is not None:
+      self.parent.update_child('HomeScreen', username)
     else:
       self.add_widget(Label(text='Login Unsuccessful'))
 

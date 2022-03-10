@@ -13,14 +13,14 @@ class CollectionsScreen(GridLayout):
     super().__init__(**kwargs)
     print(**kwargs)
     self.collections = []
-    self.userid = None
+    self.username = None
 
-  def initialize_widget(self, user_id):
+  def initialize_widget(self, username):
     """
     Initializes the widget by setting class variables and creating widgets for each collection
-    :param user_id: the logged in user
+    :param username: the logged in user
     """
-    self.userid = user_id
+    self.username = username
     self.get_collections_for_user()
     self.add_widget(back_button.BackButton())
 
@@ -28,7 +28,7 @@ class CollectionsScreen(GridLayout):
     """
     Gets the collections for the user and adds the widgets
     """
-    self.collections = collections.get_collections_for_user(self.user_id)
+    self.collections = collections.get_collections_for_user(self.username)
     for collection in self.collections:
       button_text = f"{collection.get('name')}\nNumber of Movies: {collection.get('numMovies')}" +\
                     f"\nTotal Length: {collection.get('lengthHr')}:"
@@ -52,7 +52,7 @@ class CollectionsScreen(GridLayout):
     Creates a new collection and updates the user collections
     :param button: the button clicked
     """
-    collections.add_collection(self.userid)
+    collections.add_collection(self.username)
     self.newcollection.text = ''
     self.remove_widget(self.children[-1])
     self.add_widget(BoxLayout(), len(self.children))

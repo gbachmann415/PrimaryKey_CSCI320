@@ -14,16 +14,16 @@ class Collection(GridLayout):
     super().__init__(**kwargs)
     self.movies = []
     self.collection_id = None
-    self.user_id = None
+    self.username = None
 
-  def initialize_widget(self, collection_id, user_id):
+  def initialize_widget(self, collection_id, username):
     """
     Initializes the widget by setting class variables and creating the movie widgets
     :param collection_id: the id of the collection being displayed
-    :param user_id: the user id of the logged in user
+    :param username: the username of the logged in user
     """
     self.collection_id = collection_id
-    self.user_id = user_id
+    self.username = username
     self.get_movies_for_collection()
     self.add_widget(back_button.BackButton())
 
@@ -40,6 +40,7 @@ class Collection(GridLayout):
                              size_hint_y=None, height='32dp')
       delete_button.bind(on_press=self.delete_movie_from_collection)
       movie_button = Button(text=movie.get('title'), ids={'movie_id': movie.get('movie_id')})
+      movie_button.bind(on_press=self.go_to_movie)
       grid_layout.add_widget(movie_button)
       grid_layout.add_widget(delete_button)
       self.children[-1].add_widget(grid_layout)
@@ -77,7 +78,10 @@ class Collection(GridLayout):
     :param button: the button clicked
     """
     for movie in self.movies:
-      movies.watch_movie(movie.get('movie_id'), self.user_id)
+      movies.watch_movie(movie.get('movie_id'), self.username)
+
+  def go_to_movie(self, button):
+    self.parent.update_child('Movie', movie_id=button.ids.get('movie_id'))
 
   def switch_to_search(self, button):
     """
