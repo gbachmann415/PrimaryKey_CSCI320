@@ -24,29 +24,30 @@ dbName = DB_NAME
 Establish a connection to the database with username, password, and database name.
 Failed connection will result in a connection failed output to the user.
 """
-# try:
-#     print("Attempting to establish database connection...")
-#     with SSHTunnelForwarder(('starbug.cs.rit.edu', 22),
-#                             ssh_username=username,
-#                             ssh_password=password,
-#                             remote_bind_address=('localhost', 5432)) as server:
-#         server.start()
-#         print("SSH tunnel established")
-#         params = {
-#             'database': dbName,
-#             'user': username,
-#             'password': password,
-#             'host': 'localhost',
-#             'port': server.local_bind_port
-#         }
-#
-#         conn = psycopg2.connect(**params)
-#         curs = conn.cursor()
-#         print("Database connection established")
-#         # conn.close()
-# except:
-#     print("Connection failed")
-#     # TODO do we want to end program if connection fails by adding an exit statement?
+try:
+    print("Attempting to establish database connection...")
+    # with SSHTunnelForwarder(('starbug.cs.rit.edu', 22),
+    #                         ssh_username=username,
+    #                         ssh_password=password,
+    #                         remote_bind_address=('localhost', 5432)) as server:
+    #     server.start()
+    #     print("SSH tunnel established")
+    #     params = {
+    #         'database': dbName,
+    #         'user': username,
+    #         'password': password,
+    #         'host': 'localhost',
+    #         'port': server.local_bind_port
+    #     }
+    #
+    #     conn = psycopg2.connect(**params)
+    #     curs = conn.cursor()
+    #     print("Database connection established")
+    #     conn.close()
+except:
+    print("Connection failed")
+    # TODO do we want to end program if connection fails by adding an exit statement?
+
 
 def main():
     """
@@ -57,7 +58,7 @@ def main():
     # body of main function will go before the connection close call.
     #
     ui.MovieApplication().run()
-    #conn.close()  # Close the connection to the database
+    conn.close()  # Close the connection to the database
 
 
 if __name__ == '__main__':

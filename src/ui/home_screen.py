@@ -19,10 +19,22 @@ class HomeScreen(GridLayout):
     self.username = username
 
   def go_to_collections(self, button):
+    """
+    Goes to the collections page for the user
+    :param button: the button selected
+    """
     self.parent.update_child('CollectionsScreen', self.username)
 
   def go_to_following(self, button):
-    return
+    """
+    Goes to the user following page for the logged in user
+    :param button: the button selected
+    """
+    self.parent.update_child('FollowingScreen', self.username)
 
   def search_movies(self, button):
+    """
+    Goes to the search movies page
+    :param button: the button selected
+    """
     self.parent.update_child('SearchScreen', self.username)

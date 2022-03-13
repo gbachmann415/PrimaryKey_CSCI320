@@ -29,8 +29,8 @@ def get_movies_in_collection(collection_id):
   :param collection_id: the collection id of the collection to get movies for
   """
   return [
-    {'title': 'Test Title', 'mpaa_rating': 'PG-13', 'runtimeHr': 2, 'runtimeMin': 4, 'releaseDate': '04-05-2020'},
-    {'title': 'Test Title 2', 'mpaa_rating': 'R', 'runtimeHr': 3, 'runtimeMin': 21, 'releaseDate': '04-09-1999'}
+    {'movie_id': 1, 'title': 'Test Title'},
+    {'movie_id': 2, 'title': 'Test Title 2'}
   ]
 
 

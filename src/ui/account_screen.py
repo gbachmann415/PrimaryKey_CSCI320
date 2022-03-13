@@ -11,6 +11,7 @@ class AccountScreen(GridLayout):
   def __init__(self, **kwargs):
     super(AccountScreen, self).__init__(**kwargs)
     self.add_widget(back_button.BackButton())
+    self.has_error = False
 
   def create_account(self, button):
     """
@@ -27,4 +28,6 @@ class AccountScreen(GridLayout):
     if username is not None:
       self.parent.update_child('HomeScreen', username)
     else:
-      self.add_widget(Label(text='Username is already taken'))
+      if not self.has_error:
+        self.add_widget(Label(text='Username is already taken', size_hint_y=None, height='32dp'), 2)
+        self.has_error = True

@@ -1,0 +1,18 @@
+<SearchUsersScreen>:
+    cols: 1
+    rows: 5
+
+    search_email: search_email
+    BoxLayout:
+        size_hint_y: None
+        height: '32dp'
+
+        TextInput:
+            id: search_email
+        Button:
+            text: 'Search Users'
+            on_press: root.search(self)
+    BoxLayout:
+    Label:
+        size_hint_y: None
+        height: '32dp'

@@ -1,12 +1,12 @@
-<Movie>:
+<FollowingScreen>
     rows: 4
     cols: 1
-
     BoxLayout:
+    Label:
         size_hint_y: None
-        height: '100dp'
+        height: '32dp'
     Button:
-        text: 'Mark Watched'
-        on_press: root.watch_movie(self)
+        text: 'Search Users'
+        on_press: root.search_users(self)
         size_hint_y: None
         height: '32dp'

@@ -14,6 +14,11 @@ class Movie(GridLayout):
     self.movie = None
 
   def initialize_widget(self, username, movie_id):
+    """
+    Initializes the widget by setting class variables and populating the movie information
+    :param username: the username of the logged in user
+    :param movie_id: the id of the movie being viewed
+    """
     self.movie_id = movie_id
     self.username = username
     dropdown = DropDown()
@@ -29,6 +34,9 @@ class Movie(GridLayout):
     self.get_movie_info()
 
   def get_movie_info(self):
+    """
+    Gets movie information for the user and populates the data in the widget
+    """
     self.movie = movies.get_movie(self.movie_id, self.username)
     minute = f'0{self.movie.get("runtimeMin")}' if self.movie.get(
       "runtimeMin") < 10 else f'{self.movie.get("runtimeMin")}'
@@ -48,9 +56,18 @@ class Movie(GridLayout):
                     len(self.children))
 
   def rate_movie(self, dropdown, value):
+    """
+    Rates a movie the value selected in the dropdown
+    :param dropdown: the dropdown object
+    :param value: the value selected
+    """
     movies.rate_movie(self.movie_id, self.username, int(value[0]))
     self.get_movie_info()
 
   def watch_movie(self, button):
+    """
+    Marks a movie as watched by a user
+    :param button: the button selected
+    """
     movies.watch_movie(self.movie_id, self.username)
     self.get_movie_info()

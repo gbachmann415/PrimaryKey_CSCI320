@@ -88,4 +88,4 @@ class Collection(GridLayout):
     Switches the view to the search page
     :param button: the button clicked
     """
-    return
+    self.parent.update_child('SearchScreen')
