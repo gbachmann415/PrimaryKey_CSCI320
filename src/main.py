@@ -62,6 +62,7 @@ def close_connection_to_db(conn):
 def main():
     """
     [Description goes here]
+    
     :return: None
     """
     # Establish connection to the Database
