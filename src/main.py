@@ -45,7 +45,6 @@ def connect_to_db():
             }
 
             conn = psycopg2.connect(**params)
-            curs = conn.cursor()
             print("Database connection established")
     except:
         print("Connection failed")
@@ -67,6 +66,7 @@ def main():
     """
     # Establish connection to the Database
     # conn = connect_to_db()
+    # curs = conn.cursor()
 
     # Start the Movie Application (Launching the UI)
     ui.MovieApplication().run()

@@ -29,7 +29,7 @@ create unique index studio_studio_id_uindex
 ----------------------------------------------------------------------------------
 create table p320_21.name
 (
-    id         int not null
+    id         SERIAL
         constraint name_pk
             primary key,
     first_name varchar,
@@ -189,7 +189,7 @@ create table p320_21.watched
         constraint watched_movie_movie_id_fk
             references p320_21.movie,
     date_watched date,
-    star_rating  int,
+    star_rating  float,
     constraint watched_pk
         primary key (username, movie_id, date_watched)
 );
