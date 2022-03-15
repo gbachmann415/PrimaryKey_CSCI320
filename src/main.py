@@ -16,9 +16,6 @@ import psycopg2
 from sshtunnel import SSHTunnelForwarder
 from src.ui import application as ui
 
-username = DB_USERNAME
-password = DB_PASSWORD
-dbName = DB_NAME
 
 
 def connect_to_db():
@@ -31,15 +28,15 @@ def connect_to_db():
     try:
         print("Attempting to establish database connection...")
         with SSHTunnelForwarder(('starbug.cs.rit.edu', 22),
-                                ssh_username=username,
-                                ssh_password=password,
+                                ssh_username=DB_USERNAME,
+                                ssh_password=DB_PASSWORD,
                                 remote_bind_address=('localhost', 5432)) as server:
             server.start()
             print("SSH tunnel established")
             params = {
-                'database': dbName,
-                'user': username,
-                'password': password,
+                'database': DB_NAME,
+                'user': DB_USERNAME,
+                'password': DB_PASSWORD,
                 'host': 'localhost',
                 'port': server.local_bind_port
             }
@@ -64,10 +61,6 @@ def main():
 
     :return: None
     """
-    # Establish connection to the Database
-    # conn = connect_to_db()
-    # curs = conn.cursor()
-
     # Start the Movie Application (Launching the UI)
     ui.MovieApplication().run()
 

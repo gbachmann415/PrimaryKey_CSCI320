@@ -12,6 +12,8 @@ Description:
 """
 
 from datetime import datetime
+# from config import DB_USERNAME, DB_PASSWORD, DB_NAME
+from main import connect_to_db, close_connection_to_db
 
 #TODO Probably will need to add the DB connection as a parameter for the functions in order to run the sql statements
 
@@ -22,6 +24,11 @@ def login_user(username, password):
   :param password: the password
   :return: the username of the logged in user or None if credentials invalid
   """
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # Save timestamp for last_access_date
     current_date = datetime.today().strftime('%Y-%m-%d')
     last_access_date = current_date
 
@@ -30,6 +37,9 @@ def login_user(username, password):
                                   r"WHERE username = '{}';".format(last_access_date, username)
     # SQL statement to log in the user (check if creds valid)
     sql = r"" #TODO
+
+    # Close the Database Connection
+    close_connection_to_db(conn)
 
     return "test_username"
 
@@ -44,6 +54,10 @@ def create_user(username, password, first_name, last_name, email):
   :param email: email of the new user
   :return: the username of the new user or None if username already taken
   """
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
     # Get current datetime for creation_date and last_access_date
     current_date = datetime.today().strftime('%Y-%m-%d')
     # Create/store name_id, creation_date, and last_access_date values
@@ -56,6 +70,10 @@ def create_user(username, password, first_name, last_name, email):
                                                                password, email, last_access_date)
 
     #TODO Return the username if valid, or return None and maybe some output if invalid
+
+    # Close the Database Connection
+    close_connection_to_db(conn)
+
     return "test_username"
 
 
@@ -65,8 +83,15 @@ def get_user_following(username):
   :param username: the username of user to get a following list for
   :return: a list of user information
   """
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
     # SQL statement to select the users the given username is following
     sql = r"SELECT following_username FROM p320_21.following WHERE username = '{}';".format(username)
+
+    # Close the Database Connection
+    close_connection_to_db(conn)
 
     return [
         {'username': 'testusername1', 'first_name': 'First Name', 'last_name': 'Last Name'},
@@ -81,9 +106,16 @@ def follow_user(username, following_username):
   :param following_username: the username of the user that is to be followed
   :return: None
   """
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
     # SQL statement to insert a new following_username for the given username (following a user)
     sql = r"INSERT INTO p320_21.following (username, following_username) " \
           r"VALUES ('{}', '{}');".format(username, following_username)
+
+    # Close the Database Connection
+    close_connection_to_db(conn)
 
     return
 
@@ -95,9 +127,16 @@ def unfollow_user(username, unfollowing_username):
   :param unfollowing_username: the username of the user that is to be unfollowed
   :return:
   """
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
     # SQL statement to delete the row in following table where the user is following the unfollowing_username
     sql = r"DELETE FROM p320_21.following " \
           r"WHERE username = '{}' AND following_username = '{}';".format(username, unfollowing_username)
+
+    # Close the Database Connection
+    close_connection_to_db(conn)
 
     return
 
@@ -108,7 +147,15 @@ def search_user(user_email):
   :param user_email: the user email to search for
   :return: a list of users with matching emails
   """
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
     # TODO would this just return a single user, or are people able to search for multiple at once?
+
+    # Close the Database Connection
+    close_connection_to_db(conn)
+
     return [
         {'username': 'testusername1', 'first_name': 'First Name', 'last_name': 'Last Name'},
         {'username': 'testusername2', 'first_name': 'First Name 2', 'last_name': 'Last Name 2'},
