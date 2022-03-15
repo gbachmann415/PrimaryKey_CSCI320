@@ -53,9 +53,11 @@ def connect_to_db():
 
     return conn
 
+
 def close_connection_to_db(conn):
     conn.close()
     return
+
 
 def main():
     """
@@ -70,6 +72,7 @@ def main():
 
     # Close the connection to the Database
     # close_connection_to_db(conn)
+
 
 if __name__ == '__main__':
     main()
