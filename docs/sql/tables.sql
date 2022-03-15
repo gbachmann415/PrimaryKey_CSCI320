@@ -49,10 +49,10 @@ create table p320_21."user"
     name_id          int
         constraint user_name_id_fk
             references p320_21.name,
-    creation_date    timestamp,
+    creation_date    date,
     password         varchar,
     email            varchar,
-    last_access_date timestamp
+    last_access_date date
 );
 
 create unique index user_username_uindex
