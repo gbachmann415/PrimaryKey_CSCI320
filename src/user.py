@@ -30,7 +30,7 @@ def connect_to_db():
                                     ssh_password=DB_PASSWORD,
                                     remote_bind_address=('localhost', 5432))
         server.start()
-        print("SSH tunnel established")
+        # print("SSH tunnel established")
         params = {
             'database': DB_NAME,
             'user': DB_USERNAME,
@@ -40,18 +40,12 @@ def connect_to_db():
         }
 
         conn = psycopg2.connect(**params)
-        print("Database connection established")
+        # print("Database connection established")
     except:
         print("Connection failed")
         exit()
 
     return conn
-
-
-def close_connection_to_db(conn):
-    conn.close()
-    print("Database connection closed")
-    return
 
 
 def login_user(username, password):
@@ -70,16 +64,31 @@ def login_user(username, password):
     current_date = datetime.today().strftime('%Y-%m-%d')
     last_access_date = current_date
 
-    # SQL statement to update the last_access_date value in the user table for the given user (ONLY IF LOGIN IS VALID)
-    sql_update_access_timestamp = r"UPDATE p320_21.user SET last_access_date = '{}' " \
-                                  r"WHERE username = '{}';".format(last_access_date, username)
     # SQL statement to log in the user (check if creds valid)
-    sql = r"" #TODO
+    is_valid_login = r"""SELECT * FROM p320_21."user" 
+                         WHERE username = '{}'
+                         AND password = '{}' LIMIT 1;""".format(username, password)
 
-    # Close the Database Connection
-    close_connection_to_db(conn)
+    # Validate user login
+    curs.execute(is_valid_login)
+    if curs.fetchone() is None:
+        return None
 
-    return "test_username"
+    # SQL statement to update the last_access_date value in the user table for the given user
+    update_access_timestamp = r"""UPDATE p320_21."user" 
+                                      SET last_access_date = '{}' 
+                                      WHERE username = '{}';""".format(last_access_date, username)
+
+
+    # Update last_access_date timestamp in user table (for user that is logging in)
+    curs.execute(update_access_timestamp)
+    conn.commit()
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
+    return username
 
 
 def create_user(username, password, first_name, last_name, email):
@@ -104,14 +113,16 @@ def create_user(username, password, first_name, last_name, email):
     last_access_date = current_date
 
     # Defining SQL statements for validating username and inserting into name table
-    is_valid_username = r"""SELECT * FROM p320_21."user" WHERE username = '{}';""".format(username)
-    insert_name = r"INSERT INTO p320_21.name(first_name, last_name) " \
-                  r"VALUES ('{}', '{}') RETURNING id;".format(first_name, last_name)
+    is_valid_username = r"""SELECT * FROM p320_21."user" WHERE username = '{}' LIMIT 1;""".format(username)
+    insert_name = r"""INSERT INTO p320_21.name(first_name, last_name) 
+                      VALUES ('{}', '{}') RETURNING id;""".format(first_name, last_name)
 
     # Checking if desired username is valid
     curs.execute(is_valid_username)
     if curs.fetchone() is not None:
-        close_connection_to_db(conn)
+        # Close the Database Cursor and Connection
+        curs.close()
+        conn.close()
         return None
 
     # Inserting new name into the name table
@@ -122,13 +133,14 @@ def create_user(username, password, first_name, last_name, email):
     name_id = curs.fetchone()[0]
 
     insert_user = r"""INSERT INTO p320_21."user" (username, name_id, creation_date, password, email, last_access_date)
-                        VALUES ('{}', {}, '{}', '{}', '{}', '{}');""".format(username, name_id, creation_date,
+                      VALUES ('{}', {}, '{}', '{}', '{}', '{}');""".format(username, name_id, creation_date,
                                                                              password, email, last_access_date)
     curs.execute(insert_user)
     conn.commit()
 
-    # Close the Database Connection
-    close_connection_to_db(conn)
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
 
     return username
 
@@ -146,8 +158,9 @@ def get_user_following(username):
     # SQL statement to select the users the given username is following
     sql = r"SELECT following_username FROM p320_21.following WHERE username = '{}';".format(username)
 
-    # Close the Database Connection
-    close_connection_to_db(conn)
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
 
     return [
         {'username': 'testusername1', 'first_name': 'First Name', 'last_name': 'Last Name'},
@@ -170,8 +183,9 @@ def follow_user(username, following_username):
     sql = r"INSERT INTO p320_21.following (username, following_username) " \
           r"VALUES ('{}', '{}');".format(username, following_username)
 
-    # Close the Database Connection
-    close_connection_to_db(conn)
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
 
     return
 
@@ -191,8 +205,9 @@ def unfollow_user(username, unfollowing_username):
     sql = r"DELETE FROM p320_21.following " \
           r"WHERE username = '{}' AND following_username = '{}';".format(username, unfollowing_username)
 
-    # Close the Database Connection
-    close_connection_to_db(conn)
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
 
     return
 
@@ -209,10 +224,14 @@ def search_user(user_email):
 
     # TODO would this just return a single user, or are people able to search for multiple at once?
 
-    # Close the Database Connection
-    close_connection_to_db(conn)
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
 
     return [
         {'username': 'testusername1', 'first_name': 'First Name', 'last_name': 'Last Name'},
         {'username': 'testusername2', 'first_name': 'First Name 2', 'last_name': 'Last Name 2'},
     ]
+
+# print(create_user('test', 'testpw', 'Gunnar', 'Bachmann', 'test@gmail.com'))
+# print(login_user('test', 'testpw1'))
