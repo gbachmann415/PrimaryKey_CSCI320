@@ -29,7 +29,7 @@ def connect_to_db():
                                     ssh_password=DB_PASSWORD,
                                     remote_bind_address=('localhost', 5432))
         server.start()
-        print("SSH tunnel established")
+        # print("SSH tunnel established")
         params = {
             'database': DB_NAME,
             'user': DB_USERNAME,
@@ -39,18 +39,12 @@ def connect_to_db():
         }
 
         conn = psycopg2.connect(**params)
-        print("Database connection established")
+        # print("Database connection established")
     except:
         print("Connection failed")
         exit()
 
     return conn
-
-
-def close_connection_to_db(conn):
-    conn.close()
-    print("Database connection closed")
-    return
 
 
 def get_movie(movie_id, username):
