@@ -23,6 +23,8 @@ def main():
     # Start the Movie Application (Launching the UI)
     ui.MovieApplication().run()
 
+    return
+
 
 if __name__ == '__main__':
     main()
