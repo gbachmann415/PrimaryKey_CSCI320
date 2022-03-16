@@ -266,7 +266,7 @@ def search_user(user_email):
 
 def temp_tests():
     # print(create_user('test3', 'test3pw', 'Sam', 'Hunt', 'test3@gmail.com'))
-    # print(login_user('test', 'testpw1'))
+    # print(login_user('test', 'testpw'))
     # follow_user('test', 'test2')
     # follow_user('test', 'test3')
     # print(get_user_following('test'))
