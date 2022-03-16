@@ -12,10 +12,47 @@ Description:
 """
 
 from datetime import datetime
-# from config import DB_USERNAME, DB_PASSWORD, DB_NAME
-from main import connect_to_db, close_connection_to_db
+from config import DB_USERNAME, DB_PASSWORD, DB_NAME
+import psycopg2
+from sshtunnel import SSHTunnelForwarder
 
-#TODO Probably will need to add the DB connection as a parameter for the functions in order to run the sql statements
+
+def connect_to_db():
+    """
+    Establish a connection to the database with username, password, and database name.
+    Failed connection will result in a connection failed output to the user and program exit.
+
+    :return: conn = connection to database
+    """
+    try:
+        server = SSHTunnelForwarder(('starbug.cs.rit.edu', 22),
+                                    ssh_username=DB_USERNAME,
+                                    ssh_password=DB_PASSWORD,
+                                    remote_bind_address=('localhost', 5432))
+        server.start()
+        print("SSH tunnel established")
+        params = {
+            'database': DB_NAME,
+            'user': DB_USERNAME,
+            'password': DB_PASSWORD,
+            'host': 'localhost',
+            'port': server.local_bind_port
+        }
+
+        conn = psycopg2.connect(**params)
+        print("Database connection established")
+    except:
+        print("Connection failed")
+        exit()
+
+    return conn
+
+
+def close_connection_to_db(conn):
+    conn.close()
+    print("Database connection closed")
+    return
+
 
 def login_user(username, password):
     """
@@ -27,6 +64,7 @@ def login_user(username, password):
     # Establish Database Connection
     conn = connect_to_db()
     curs = conn.cursor()
+
 
     # Save timestamp for last_access_date
     current_date = datetime.today().strftime('%Y-%m-%d')
@@ -60,21 +98,39 @@ def create_user(username, password, first_name, last_name, email):
 
     # Get current datetime for creation_date and last_access_date
     current_date = datetime.today().strftime('%Y-%m-%d')
+
     # Create/store name_id, creation_date, and last_access_date values
-    name_id = 123  # TODO How do we want to organize the name_id's? Could just be a count (ex: first user is 1 and so on)
     creation_date = current_date
     last_access_date = current_date
-    # SQL statement to add a new user to the user table in the database
-    sql = r"INSERT INTO p320_21.user (username, name_id, creation_date, password, email, last_access_date) " \
-          r"VALUES ('{}', {}, '{}', '{}', '{}', '{}');".format(username, name_id, creation_date,
-                                                               password, email, last_access_date)
 
-    #TODO Return the username if valid, or return None and maybe some output if invalid
+    # Defining SQL statements for validating username and inserting into name table
+    is_valid_username = r"""SELECT * FROM p320_21."user" WHERE username = '{}';""".format(username)
+    insert_name = r"INSERT INTO p320_21.name(first_name, last_name) " \
+                  r"VALUES ('{}', '{}') RETURNING id;".format(first_name, last_name)
+
+    # Checking if desired username is valid
+    curs.execute(is_valid_username)
+    if curs.fetchone() is not None:
+        close_connection_to_db(conn)
+        return None
+
+    # Inserting new name into the name table
+    curs.execute(insert_name)
+    conn.commit()
+
+    # Saving the name_id value to use when inserting new user into user table
+    name_id = curs.fetchone()[0]
+
+    insert_user = r"""INSERT INTO p320_21."user" (username, name_id, creation_date, password, email, last_access_date)
+                        VALUES ('{}', {}, '{}', '{}', '{}', '{}');""".format(username, name_id, creation_date,
+                                                                             password, email, last_access_date)
+    curs.execute(insert_user)
+    conn.commit()
 
     # Close the Database Connection
     close_connection_to_db(conn)
 
-    return "test_username"
+    return username
 
 
 def get_user_following(username):
