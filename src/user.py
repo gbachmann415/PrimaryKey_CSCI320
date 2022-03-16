@@ -180,8 +180,12 @@ def follow_user(username, following_username):
     curs = conn.cursor()
 
     # SQL statement to insert a new following_username for the given username (following a user)
-    sql = r"INSERT INTO p320_21.following (username, following_username) " \
-          r"VALUES ('{}', '{}');".format(username, following_username)
+    follow = r"""INSERT INTO p320_21.following (username, following_username) 
+                 VALUES ('{}', '{}');""".format(username, following_username)
+
+    # Execute SQL statement to follow a user
+    curs.execute(follow)
+    conn.commit()
 
     # Close the Database Cursor and Connection
     curs.close()
@@ -233,5 +237,7 @@ def search_user(user_email):
         {'username': 'testusername2', 'first_name': 'First Name 2', 'last_name': 'Last Name 2'},
     ]
 
-# print(create_user('test', 'testpw', 'Gunnar', 'Bachmann', 'test@gmail.com'))
+# print(create_user('test3', 'test3pw', 'Sam', 'Hunt', 'test3@gmail.com'))
 # print(login_user('test', 'testpw1'))
+# follow_user('test', 'test2')
+# follow_user('test', 'test3')
