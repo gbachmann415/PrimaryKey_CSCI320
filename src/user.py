@@ -156,16 +156,27 @@ def get_user_following(username):
     curs = conn.cursor()
 
     # SQL statement to select the users the given username is following
-    sql = r"SELECT following_username FROM p320_21.following WHERE username = '{}';".format(username)
+    get_following = r"""SELECT following.following_username, name.first_name, name.last_name
+                        FROM p320_21.following
+                        LEFT JOIN p320_21."user" ON following.following_username = "user".username
+                        LEFT JOIN p320_21.name ON "user".name_id = name.id
+                        WHERE following.username = '{}';""".format(username)
+
+    # Execute the SQL to get list of users you are following
+    curs.execute(get_following)
+    # print(curs.fetchall())
+    records = curs.fetchall()
+
+    # Save query result into a list (list of dict objects)
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(['username', 'first_name', 'last_name'], record)))
 
     # Close the Database Cursor and Connection
     curs.close()
     conn.close()
 
-    return [
-        {'username': 'testusername1', 'first_name': 'First Name', 'last_name': 'Last Name'},
-        {'username': 'testusername2', 'first_name': 'First Name 2', 'last_name': 'Last Name 2'},
-    ]
+    return result_list
 
 
 def follow_user(username, following_username):
@@ -241,3 +252,4 @@ def search_user(user_email):
 # print(login_user('test', 'testpw1'))
 # follow_user('test', 'test2')
 # follow_user('test', 'test3')
+# print(get_user_following('test'))
