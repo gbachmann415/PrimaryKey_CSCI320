@@ -190,6 +190,8 @@ def follow_user(username, following_username):
     conn = connect_to_db()
     curs = conn.cursor()
 
+    #TODO add check to see if both usernames exist?
+
     # SQL statement to insert a new following_username for the given username (following a user)
     follow = r"""INSERT INTO p320_21.following (username, following_username) 
                  VALUES ('{}', '{}');""".format(username, following_username)
@@ -250,9 +252,11 @@ def search_user(user_email):
         {'username': 'testusername2', 'first_name': 'First Name 2', 'last_name': 'Last Name 2'},
     ]
 
-# print(create_user('test3', 'test3pw', 'Sam', 'Hunt', 'test3@gmail.com'))
-# print(login_user('test', 'testpw1'))
-# follow_user('test', 'test2')
-# follow_user('test', 'test3')
-# print(get_user_following('test'))
-
+def temp_tests():
+    # print(create_user('test3', 'test3pw', 'Sam', 'Hunt', 'test3@gmail.com'))
+    # print(login_user('test', 'testpw1'))
+    # follow_user('test', 'test2')
+    # follow_user('test', 'test3')
+    # print(get_user_following('test'))
+    # unfollow_user('test', 'test3')
+    return
