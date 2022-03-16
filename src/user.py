@@ -8,7 +8,7 @@ Authors: - Milo Berry
          - Ari Wisenburn
          - Noah Pelletier
 
-Description:
+Description: Functions for user interactions with the application
 """
 
 from datetime import datetime
@@ -164,7 +164,6 @@ def get_user_following(username):
 
     # Execute the SQL to get list of users you are following
     curs.execute(get_following)
-    # print(curs.fetchall())
     records = curs.fetchall()
 
     # Save query result into a list (list of dict objects)
@@ -243,14 +242,27 @@ def search_user(user_email):
     conn = connect_to_db()
     curs = conn.cursor()
 
+    # SQL to return the username, first and last name of users that have the given email
+    search = """SELECT username, first_name, last_name
+                FROM p320_21."user"
+                LEFT JOIN p320_21.name ON "user".name_id = name.id
+                WHERE email = '{}';""".format(user_email)
+
+    # Search for users
+    curs.execute(search)
+    records = curs.fetchall()
+
+    # Save query result into a list (list of dict objects)
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(['username', 'first_name', 'last_name'], record)))
+
     # Close the Database Cursor and Connection
     curs.close()
     conn.close()
 
-    return [
-        {'username': 'testusername1', 'first_name': 'First Name', 'last_name': 'Last Name'},
-        {'username': 'testusername2', 'first_name': 'First Name 2', 'last_name': 'Last Name 2'},
-    ]
+    return result_list
+
 
 def temp_tests():
     # print(create_user('test3', 'test3pw', 'Sam', 'Hunt', 'test3@gmail.com'))
@@ -259,4 +271,5 @@ def temp_tests():
     # follow_user('test', 'test3')
     # print(get_user_following('test'))
     # unfollow_user('test', 'test3')
+    # print(search_user('test@gmail.com'))
     return
