@@ -217,8 +217,12 @@ def unfollow_user(username, unfollowing_username):
     curs = conn.cursor()
 
     # SQL statement to delete the row in following table where the user is following the unfollowing_username
-    sql = r"DELETE FROM p320_21.following " \
-          r"WHERE username = '{}' AND following_username = '{}';".format(username, unfollowing_username)
+    unfollow = r"""DELETE FROM p320_21.following 
+                   WHERE username = '{}' AND following_username = '{}';""".format(username, unfollowing_username)
+
+    # Unfollow given unfollowing username
+    curs.execute(unfollow)
+    conn.commit()
 
     # Close the Database Cursor and Connection
     curs.close()
@@ -237,8 +241,6 @@ def search_user(user_email):
     conn = connect_to_db()
     curs = conn.cursor()
 
-    # TODO would this just return a single user, or are people able to search for multiple at once?
-
     # Close the Database Cursor and Connection
     curs.close()
     conn.close()
@@ -253,3 +255,4 @@ def search_user(user_email):
 # follow_user('test', 'test2')
 # follow_user('test', 'test3')
 # print(get_user_following('test'))
+
