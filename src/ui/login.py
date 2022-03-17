@@ -9,6 +9,7 @@ class Login(GridLayout):
   """
   def __init__(self, **kwargs):
     super(Login, self).__init__(**kwargs)
+    self.has_error = False
 
   def login_pressed(self, button):
     """
@@ -19,7 +20,9 @@ class Login(GridLayout):
     if username is not None:
       self.parent.update_child('HomeScreen', username)
     else:
-      self.add_widget(Label(text='Login Unsuccessful'))
+      if not self.has_error:
+        self.add_widget(Label(text='Login Unsuccessful'))
+        self.has_error = True
 
   def create_account(self, button):
     """
