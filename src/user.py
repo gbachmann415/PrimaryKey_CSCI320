@@ -189,7 +189,12 @@ def follow_user(username, following_username):
     conn = connect_to_db()
     curs = conn.cursor()
 
-    #TODO add check to see if both usernames exist?
+    # Check if usernames exist
+    curs.execute(r"""SELECT username FROM p320_21."user" where username = '{}' LIMIT 1;""".format(following_username))
+    if curs.fetchone() is None:
+        curs.close()
+        conn.close()
+        return
 
     # SQL statement to insert a new following_username for the given username (following a user)
     follow = r"""INSERT INTO p320_21.following (username, following_username) 
@@ -238,6 +243,8 @@ def search_user(user_email):
   :param user_email: the user email to search for
   :return: a list of users with matching emails
   """
+    if user_email == "":
+        return []
     # Establish Database Connection
     conn = connect_to_db()
     curs = conn.cursor()
