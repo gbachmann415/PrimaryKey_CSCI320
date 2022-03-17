@@ -84,11 +84,13 @@ def rate_movie(movie_id, username, rating):
   """
   return
 
+# sort_by_list = ['Default', 'Movie Name', 'Studio', 'Genre', 'Released Year']
 
-def search_by_name(movie_name):
+def search_by_name(movie_name, sort_type):
   """
   Searches for a movie by name
   :param movie_name: the name to search for
+  :param sort_type: the sort type for the search
   :return: A list of movies that have titles matching the search name
   """
   return [
@@ -117,10 +119,11 @@ def search_by_name(movie_name):
   ]
 
 
-def search_by_release_date(release_date):
+def search_by_release_date(release_date, sort_type):
   """
   Searches for a movie by release data
   :param release_date: the release data to search for
+  :param sort_type: the sort type for the search
   :return: A list of movies that have release dates matching the search date
   """
   return [
@@ -149,10 +152,11 @@ def search_by_release_date(release_date):
   ]
 
 
-def search_by_cast(cast_member):
+def search_by_cast(cast_member, sort_type):
   """
   Searches for a movie by cast member
   :param cast_member: the cast member name to search for
+  :param sort_type: the sort type for the search
   :return: A list of movies that have cast members matching the search name
   """
   return [
@@ -181,10 +185,11 @@ def search_by_cast(cast_member):
   ]
 
 
-def search_by_studio(studio_name):
+def search_by_studio(studio_name, sort_type):
   """
   Searches for a movie by studio name
   :param studio_name: the studio name to search for
+  :param sort_type: the sort type for the search
   :return: A list of movies that have studios matching the search name
 """
   return [
@@ -213,10 +218,11 @@ def search_by_studio(studio_name):
   ]
 
 
-def search_by_genre(genre_name):
+def search_by_genre(genre_name, sort_type):
   """
   Searches for a movie by genre
   :param genre_name: the name of the genre to search for
+  :param sort_type: the sort type for the search
   :return: A list of movies that have genre matching the search genre
   """
   return [
