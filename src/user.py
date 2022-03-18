@@ -281,7 +281,7 @@ def temp_tests():
     # follow_user('test1', 'test3')
     # follow_user('test1', 'test4')
     # print(get_user_following('test'))
-    # unfollow_user('test', 'test3')
-    # print(search_user('test@gmail.com'))
+    # unfollow_user('test1', 'test3')
+    # print(search_user('test1@gmail.com'))
     return
 temp_tests()
