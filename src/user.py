@@ -253,7 +253,7 @@ def search_user(user_email):
     search = """SELECT username, first_name, last_name
                 FROM p320_21."user"
                 LEFT JOIN p320_21.name ON "user".name_id = name.id
-                WHERE email = '{}';""".format(user_email)
+                WHERE email like '%{}%';""".format(user_email)
 
     # Search for users
     curs.execute(search)
