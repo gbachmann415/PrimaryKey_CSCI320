@@ -52,10 +52,38 @@ def get_collections_for_user(username):
   Gets a list of collections for given user
   :param username: the username of the user to get collections for
   """
-    return [
-        {'collection_id': 1, 'name': 'Test Name', 'numMovies': 2, 'lengthHr': 3, 'lengthMin': 48},
-        {'collection_id': 2, 'name': 'Test Name 2', 'numMovies': 8, 'lengthHr': 18, 'lengthMin': 5}
-    ]
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL to return the username, first and last name of users that have the given email
+    sql = r"""SELECT collection.collection_id,
+                     collection.name,
+                     COUNT(movies_in_collection.movie_id) as movie_count,
+                     SUM(runtime) / 60 AS hours,
+                     SUM(runtime) % 60 AS minutes
+              FROM p320_21.collection
+              LEFT JOIN p320_21.movies_in_collection
+                  ON collection.collection_id = movies_in_collection.collection_id
+              LEFT JOIN p320_21.movie
+                  ON movies_in_collection.movie_id = movie.movie_id
+              WHERE collection.username = '{}'
+              GROUP BY 1, 2;""".format(username)
+
+    # Search for users
+    curs.execute(sql)
+    records = curs.fetchall()
+
+    # Save query result into a list (list of dict objects)
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(['collection_id', 'name', 'numMovies', 'lengthHr', 'lengthMin'], record)))
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
+    return result_list
 
 
 def get_movies_in_collection(collection_id):
@@ -68,10 +96,10 @@ def get_movies_in_collection(collection_id):
     curs = conn.cursor()
 
     # SQL to return the username, first and last name of users that have the given email
-    movies_in_collection = """SELECT movies_in_collection.movie_id, title
-                              FROM p320_21.movies_in_collection
-                              LEFT JOIN p320_21.movie ON movies_in_collection.movie_id = movie.movie_id
-                              WHERE collection_id = {};""".format(collection_id)
+    movies_in_collection = r"""SELECT movies_in_collection.movie_id, title
+                               FROM p320_21.movies_in_collection
+                               LEFT JOIN p320_21.movie ON movies_in_collection.movie_id = movie.movie_id
+                               WHERE collection_id = {};""".format(collection_id)
 
     # Search for users
     curs.execute(movies_in_collection)
@@ -236,10 +264,16 @@ def add_movie_to_collection(username, collection_name, movie_id):
 
 def test():
     # add_collection('test1', 'testCollection1')
+    # add_collection('test1', 'testCollection2')
     # add_movie_to_collection('test1', 'testCollection1', 1)
     # add_movie_to_collection('test1', 'testCollection1', 2)
-    # update_collection_name(1, 'testCollection1.5')
-    print(get_movies_in_collection(1))
+    # add_movie_to_collection('test1', 'testCollection2', 3)
+    # add_movie_to_collection('test1', 'testCollection2', 4)
+    # add_movie_to_collection('test1', 'testCollection2', 5)
+    # add_movie_to_collection('test1', 'testCollection2', 6)
+    # print(get_collections_for_user('test1'))
+    # update_collection_name(1, 'testCollection1')
+    # print(get_movies_in_collection(1))
     # delete_movie_from_collection(1, 1)
     # delete_movie_from_collection(1, 2)
     # delete_collection(1)
@@ -247,4 +281,4 @@ def test():
     return
 
 
-test()
+# test()
