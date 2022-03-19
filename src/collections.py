@@ -121,7 +121,7 @@ def add_collection(username, collection_name):
     # Check if collection name exist
     curs.execute(r"""SELECT * FROM p320_21.collection 
                      WHERE name = '{}' AND username = '{}' LIMIT 1;""".format(collection_name, username))
-    if curs.fetchone() is None:
+    if curs.fetchone() is not None:
         curs.close()
         conn.close()
         return
@@ -173,4 +173,34 @@ def add_movie_to_collection(username, collection_name, movie_id):
   :param movie_id: The id of the movie to add to the collection
   :return: None
   """
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # Execute SQL
+    curs.execute(r"""SELECT collection_id FROM p320_21.collection
+                     WHERE name = '{}' AND username = '{}';""".format(collection_name, username))
+    collection_id = curs.fetchone()[0]
+    try:
+        curs.execute(r"""INSERT INTO p320_21.movies_in_collection(collection_id, movie_id)
+                         VALUES ({}, {});""".format(collection_id, movie_id))
+        conn.commit()
+    except:
+        # Close the Database Cursor and Connection
+        curs.close()
+        conn.close()
+        return
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return
+
+def test():
+    # add_collection('test1', 'testCollection1')
+    add_movie_to_collection('test1', 'testCollection1', 1)
+    add_movie_to_collection('test1', 'testCollection1', 2)
+    return
+
+test()
