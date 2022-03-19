@@ -72,14 +72,14 @@ class SearchScreen(GridLayout):
 
     movie_list = []
     if self.search_type == 'Movie Name':
-      movie_list = movies.search_by_name(self.search_word, self.sort_type)
+      movie_list = movies.search_by_name(self.search_word.text, self.sort_type)
     if self.search_type == 'Release Date':
-      movie_list = movies.search_by_release_date(self.search_word, self.sort_type)
+      movie_list = movies.search_by_release_date(self.search_word.text, self.sort_type)
     if self.search_type == 'Cast Members':
-      movie_list = movies.search_by_cast(self.search_word, self.sort_type)
+      movie_list = movies.search_by_cast(self.search_word.text, self.sort_type)
     if self.search_type == 'Studio':
-      movie_list = movies.search_by_studio(self.search_word, self.sort_type)
+      movie_list = movies.search_by_studio(self.search_word.text, self.sort_type)
     if self.search_type == 'Genre':
-      movie_list = movies.search_by_genre(self.search_word, self.sort_type)
+      movie_list = movies.search_by_genre(self.search_word.text, self.sort_type)
 
     self.parent.update_child('MoviesScreen', movie_list=movie_list)

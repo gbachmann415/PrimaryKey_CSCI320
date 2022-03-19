@@ -2,7 +2,17 @@
     rows: 3
     cols: 1
 
-    BoxLayout:
+    ScrollView:
+        do_scroll_x: False
+        do_scroll_y: True
+        size_hint_x: 1
+        size: self.size
+        scroll_wheel_distance: 200
+
+        GridLayout:
+            cols: 2
+            size_hint_y: None
+            height: self.minimum_height
     Label:
         size_hint_y: None
         height: '32dp'

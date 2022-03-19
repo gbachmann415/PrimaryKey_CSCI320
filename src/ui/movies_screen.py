@@ -1,5 +1,6 @@
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
+from kivy.uix.label import Label
 from src.ui import back_button
 
 
@@ -18,26 +19,27 @@ class MoviesScreen(GridLayout):
     """
     self.username = username
     self.movies = movie_list
-    for movie in self.movies:
-      minute = f'0{movie.get("runtimeMin")}' if movie.get(
-        "runtimeMin") < 10 else f'{movie.get("runtimeMin")}'
-      button_text = f'Title: {movie.get("title")}\n' + \
-                    f'MPAA Rating: {movie.get("mpaa_rating")}\n' + \
-                    f'Runtime: {movie.get("runtimeHr")}:{minute}\n' + \
-                    f'Release Date: {movie.get("releaseDate")}\n' + \
-                    f'Rating: {movie.get("rating")}\n' +\
-                    f'Studio: {movie.get("studio")}\n' +\
-                    f'Director: {movie.get("director")}\n' +\
-                    'Cast Members: '
 
-      for cast_member in movie.get('cast_members'):
-        button_text += f'{cast_member}, '
+    if len(self.movies) == 0:
+      self.children[-1].children[0].add_widget(Label(text='No Results', size_hint_y=None, height='400dp'))
+    else:
+      for movie in self.movies:
+        cast = "" if movie.get("cast_members") is None else movie.get("cast_members").replace(", ", ",\n")
+        studio = "" if movie.get("studio") is None else movie.get("studio").replace(", ", ",\n")
+        minute = f'0{movie.get("runtimeMin")}' if movie.get(
+          "runtimeMin") < 10 else f'{movie.get("runtimeMin")}'
+        button_text = f'Title: {movie.get("title")}\n' + \
+                      f'MPAA Rating: {movie.get("mpaa_rating")}\n' + \
+                      f'Runtime: {movie.get("runtimeHr")}:{minute}\n' + \
+                      f'Release Date: {movie.get("releaseDate")}\n' + \
+                      f'Rating: {movie.get("rating")}\n' +\
+                      f'Director: {movie.get("director")}\n' +\
+                      f'Cast Member(s): {cast}\n' +\
+                      f'Studio(s): {studio}'
+        movie_button = Button(text=button_text, ids={'movie_id': movie.get('movie_id')}, size_hint_y=None, height='400dp')
+        movie_button.bind(on_press=self.go_to_movie)
+        self.children[-1].children[0].add_widget(movie_button)
 
-      button_text = button_text[:-2]
-
-      movie_button = Button(text=button_text, ids={'movie_id': movie.get('movie_id')})
-      movie_button.bind(on_press=self.go_to_movie)
-      self.children[-1].add_widget(movie_button)
     self.add_widget(back_button.BackButton())
 
   def go_to_movie(self, button):
