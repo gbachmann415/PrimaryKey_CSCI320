@@ -107,10 +107,10 @@ def delete_movie_from_collection(collection_id, movie_id):
   return
 
 
-def add_movie_to_collection(user_id, collection_name, movie_id):
+def add_movie_to_collection(username, collection_name, movie_id):
   """
   Adds a movie to a user's collection
-  :param user_id: The user id of the currently logged in user
+  :param username: The username of the currently logged in user
   :param collection_name: The name of the collection to add to
   :param movie_id: The id of the movie to add to the collection
   :return: None
