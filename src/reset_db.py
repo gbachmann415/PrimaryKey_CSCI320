@@ -194,7 +194,7 @@ create table p320_21.funds
 ----------------------------------------------------------------------------------
 create table p320_21.collection
 (
-    collection_id int not null
+    collection_id serial not null
         constraint collection_pk
             primary key,
     name          varchar,
