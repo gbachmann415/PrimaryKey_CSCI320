@@ -76,6 +76,22 @@ def update_collection_name(collection_id, new_name):
   :param new_name: the new name of the collection
   :return: None
   """
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL
+    change_collection_name = r"""UPDATE p320_21.collection SET name = '{}' 
+                                 WHERE collection_id = {};""".format(new_name, collection_id)
+
+    # Execute SQL
+    curs.execute(change_collection_name)
+    conn.commit()
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return
 
 
@@ -197,10 +213,17 @@ def add_movie_to_collection(username, collection_name, movie_id):
 
     return
 
+
 def test():
     # add_collection('test1', 'testCollection1')
-    add_movie_to_collection('test1', 'testCollection1', 1)
-    add_movie_to_collection('test1', 'testCollection1', 2)
+    # add_movie_to_collection('test1', 'testCollection1', 1)
+    # add_movie_to_collection('test1', 'testCollection1', 2)
+    update_collection_name(1, 'testCollection1.5')
+    # delete_movie_from_collection(1, 1)
+    # delete_movie_from_collection(1, 2)
+    # delete_collection(1)
+
     return
+
 
 test()
