@@ -48,71 +48,94 @@ def connect_to_db():
 
 
 def get_collections_for_user(username):
-  """
+    """
   Gets a list of collections for given user
   :param username: the username of the user to get collections for
   """
-  return [
-    {'collection_id': 1, 'name': 'Test Name', 'numMovies': 2, 'lengthHr': 3, 'lengthMin': 48},
-    {'collection_id': 2, 'name': 'Test Name 2', 'numMovies': 8, 'lengthHr': 18, 'lengthMin': 5}
-  ]
+    return [
+        {'collection_id': 1, 'name': 'Test Name', 'numMovies': 2, 'lengthHr': 3, 'lengthMin': 48},
+        {'collection_id': 2, 'name': 'Test Name 2', 'numMovies': 8, 'lengthHr': 18, 'lengthMin': 5}
+    ]
 
 
 def get_movies_in_collection(collection_id):
-  """
+    """
   Gets a list of movies in a given collection
   :param collection_id: the collection id of the collection to get movies for
   """
-  return [
-    {'movie_id': 1, 'title': 'Test Title'},
-    {'movie_id': 2, 'title': 'Test Title 2'}
-  ]
+    return [
+        {'movie_id': 1, 'title': 'Test Title'},
+        {'movie_id': 2, 'title': 'Test Title 2'}
+    ]
 
 
 def update_collection_name(collection_id, new_name):
-  """
+    """
   Updates the name of the collection
   :param collection_id: the id of the collection to update
   :param new_name: the new name of the collection
   :return: None
   """
-  return
+    return
 
 
 def delete_collection(collection_id):
-  """
+    """
   Deletes the given collection
   :param collection_id: the id of the collection to delete
   :return: None
   """
-  return
+    return
 
 
-def add_collection(collection_name):
-  """
+def add_collection(username, collection_name):
+    """
   Adds a new collection with no movies
+  :param username: the username the collection is being created for
   :param collection_name: the name of the collection to add
   :return: None
   """
-  return
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # Check if collection name exist
+    curs.execute(r"""SELECT * FROM p320_21.collection 
+                     WHERE name = '{}' AND username = '{}' LIMIT 1;""".format(collection_name, username))
+    if curs.fetchone() is None:
+        curs.close()
+        conn.close()
+        return
+
+    # Create collection
+    create_collection = r"""INSERT INTO p320_21.collection(name, username) 
+                            VALUES ('{}', '{}');""".format(collection_name, username)
+    curs.execute(create_collection)
+    conn.commit()
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
+    return
 
 
 def delete_movie_from_collection(collection_id, movie_id):
-  """
+    """
   Deletes a movie from the given collection
   :param collection_id: the id of the collection to remove the movie from
   :param movie_id: the id of the movie to remove
   :return: None
   """
-  return
+    return
 
 
 def add_movie_to_collection(username, collection_name, movie_id):
-  """
+    """
   Adds a movie to a user's collection
   :param username: The username of the currently logged in user
   :param collection_name: The name of the collection to add to
   :param movie_id: The id of the movie to add to the collection
   :return: None
   """
-  return
+    return
