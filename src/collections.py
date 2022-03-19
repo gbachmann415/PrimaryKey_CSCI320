@@ -63,10 +63,30 @@ def get_movies_in_collection(collection_id):
   Gets a list of movies in a given collection
   :param collection_id: the collection id of the collection to get movies for
   """
-    return [
-        {'movie_id': 1, 'title': 'Test Title'},
-        {'movie_id': 2, 'title': 'Test Title 2'}
-    ]
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL to return the username, first and last name of users that have the given email
+    movies_in_collection = """SELECT movies_in_collection.movie_id, title
+                              FROM p320_21.movies_in_collection
+                              LEFT JOIN p320_21.movie ON movies_in_collection.movie_id = movie.movie_id
+                              WHERE collection_id = {};""".format(collection_id)
+
+    # Search for users
+    curs.execute(movies_in_collection)
+    records = curs.fetchall()
+
+    # Save query result into a list (list of dict objects)
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(['movie_id', 'title'], record)))
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
+    return result_list
 
 
 def update_collection_name(collection_id, new_name):
@@ -218,7 +238,8 @@ def test():
     # add_collection('test1', 'testCollection1')
     # add_movie_to_collection('test1', 'testCollection1', 1)
     # add_movie_to_collection('test1', 'testCollection1', 2)
-    update_collection_name(1, 'testCollection1.5')
+    # update_collection_name(1, 'testCollection1.5')
+    print(get_movies_in_collection(1))
     # delete_movie_from_collection(1, 1)
     # delete_movie_from_collection(1, 2)
     # delete_collection(1)
