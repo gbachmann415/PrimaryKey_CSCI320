@@ -85,6 +85,25 @@ def delete_collection(collection_id):
   :param collection_id: the id of the collection to delete
   :return: None
   """
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL
+    del_movies_from_collection = r"""DELETE FROM p320_21.movies_in_collection 
+                                     WHERE collection_id = {};""".format(collection_id)
+    del_collection = r"""DELETE FROM p320_21.collection WHERE collection_id = {};""".format(collection_id)
+
+    # Execute SQL
+    curs.execute(del_movies_from_collection)
+    conn.commit()
+    curs.execute(del_collection)
+    conn.commit()
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return
 
 
@@ -127,6 +146,22 @@ def delete_movie_from_collection(collection_id, movie_id):
   :param movie_id: the id of the movie to remove
   :return: None
   """
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL
+    del_movie_from_collection = r"""DELETE FROM p320_21.movies_in_collection 
+                                         WHERE collection_id = {} AND movie_id = {};""".format(collection_id, movie_id)
+
+    # Execute SQL
+    curs.execute(del_movie_from_collection)
+    conn.commit()
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return
 
 
