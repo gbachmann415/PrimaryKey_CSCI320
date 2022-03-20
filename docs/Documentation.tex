@@ -1,6 +1,19 @@
 \documentclass[12pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
+\usepackage{listings}
+
+\lstset{frame=tb,
+  language=SQL,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=2
+}
 \title{Movie List}
 
 \date{\today} 
@@ -19,29 +32,30 @@ aew1756: Ari Wisenburn\\
 \section{Introduction}
 Our domain is the Movie Domain which will follow a very similar outline as the Music domain. Rather than users creating collections of music, it will be of movies instead. Users will be able to create collections of movies and search for movies based off of name, release date, cast members, studio, and genre. Users will also be able to sort movies, add and delete movies from their collection, rate movies, and even watch movies individually (or play an entire collection). Following and unfollowing friends will function the same as our primary domain.
 
-Our program will be primarily written in Python and we will be using a PostgreSQL database. User interaction will be driven from the command line that will be extended to a GUI given enough time.
+Our program will be primarily written in Python and we will be using a PostgreSQL database. User interaction will be driven through a Python-based GUI.
 
 \section{Design}
 \subsection{Conceptual Model}
 \includegraphics[scale=0.75]{ERDiagram.pdf} \\
 Most of our ER Diagram is created directly from the requirements. \\\\
-The biggest consideration made in our EER diagram was our decision to break up \emph{People} into the specializations \emph{Actor} and \emph{Director}. Since the requirements state both of these fields must be searchable separately and movies must have only a single director, we decided to create these specializations with their own separate relationships to the \emph{Movie} entity. This will allow us to easily split out both of these entities into their own separate queries to optimize performance. \\\\
+The biggest consideration made was the inclusion of the \emph{Genre} entity. This allows us to re-use genres between movies without re-creating on that already exists keeping our database in 3NF. \\\\
 Another consideration of the table, was the inclusion of the \emph{Date Watched} attribute in the \emph{Watches} relationship. The requirements mention that in Phase 4, we need to be able to find the most popular movies in the past 90 days as well as allow users to mark every time they play a movie, we decided to include the date they marked the movie as watched to allow us to easily perform these queries as well as have multiple entries for the same movie from the same user. \\\\
 \subsection{Reduction to tables}
 \includegraphics[scale=0.75]{reduction to tables.pdf} \\
-For the \emph{Person} entity, because the specializations have no distinct attributes and only their relationship to the \emph{Movie} entity was different, we created a single table \emph{Person} with a required field of \emph{Type} to distinguish between \emph{Actor} and \emph{Director}. This does come with the drawback of having duplicate entries for an actor that is also a director, but because we moved the attribute \emph{Name} into its own table, there should be no anomalies when updating. Looking at the relationships with the \emph{Person} entity, \emph{Acts In} became its own table since it is an N:M relationship while \emph{Directs} turned into the field \emph{Director Id} within the \emph{Movie} table since movies can only have a single director. The primary key for the \emph{ActsIn} table is a combination of the \emph{Movie Id} and \emph{Person Id} since these two elements will always be unique together.\\\\
+For the \emph{Person} entity, this comprises only of a \emph{Person Id} and a \emph{Name Id} for an individual with the \emph{Person Id} as the primary key and \emph{Name Id} as a foreign key to the \emph{Name} table. Looking at the relationships with the \emph{Person} entity, \emph{Acts In} became its own table since it is an N:M relationship while \emph{Directs} turned into the field \emph{Director Id} within the \emph{Movie} table since movies can only have a single director. The primary key for the \emph{ActsIn} table is a combination of the \emph{Movie Id} and \emph{Person Id} since these two elements will always be unique together.\\\\
 Regarding the \emph{Name} table, since \emph{Name} is a composite attribute made up of \emph{First Name} and \emph{Last Name}, it was split off into its own table. \\\\
-Moving forward to the \emph{Movie} entity itself, since \emph{Genre} is a multi-valued attribute, it was moved into its own table \emph{MovieGenre} with the primary key being composed of the genre name itself and the Movie Id it is associated with since the combination of these two elements are unique. The \emph{Average User Rating} was disregarded in the table since it is a derived attribute and will be calculated when needed. \\\\
+Moving forward to the \emph{Movie} entity itself, the \emph{Average User Rating} was disregarded in the table since it is a derived attribute and will be calculated when needed. \emph{Genre} has also been given its own entity type since multiple movies can have the same genre. The \emph{Classifies} relationship connects \emph{Genre} and \emph{Movie} with its primary key comprising of \emph{Genre Id} and \emph{Movie Id}. \\\\
 Then looking at the \emph{Studio} entity, the entity itself was converted into a simple table with all its attributes. But the \emph{Funds} relationship between the \emph{Movie} entity and the \emph{Studio} entity was moved into its own separate table called \emph{Funds} since they have an N:M relationship. \\\\
 Next looking at the \emph{User} entity, the entity was mapped to its own table with all its attributes except the composite \emph{Name} attribute. Since we already have a \emph{Name} table, the \emph{User} table gets the attribute \emph{Name Id} as a reference to this table. Then translating the relationship \emph{Watches} between the \emph{User} entity and the \emph{Movie} entity, this was moved into its own separate table named \emph{Watched} with the relationship attributes as well as foreign keys to the \emph{Movie Id}, \emph{Date Watched}, and \emph{Username} which make up the primary key of the table. The \emph{User} entity also has the relationship \emph{Follow} that was converted to the table \emph{Following} since the relationship is M:N and with the primary key comprised of the \emph{Collection Id} and \emph{Movie Id}\\\\
 Lastly, discussing the \emph{Collection} entity, this was transformed into its own table with only the attributes \emph{Collection Id} and \emph{Name} since the other 2 attributes are derived attributes. This table also includes a foreign key \emph{Username} to reference the user that created it since collections can only be created by a single user. Then its relationship \emph{Comprises} was turned into its own table \emph{MoviesInCollection} since the relationship is N:M which has the \emph{Collection Id} and \emph{Movie Id} as its primary key.
 \subsection{Data Requirements/Constraints}
-Within the \emph{Person} entity, the \emph{Name} and \emph{Id} for each person is required and unique. Additionally, because our reduction to tables for the \emph{Person} entity includes the field \emph{Type} to map to the total-participation and disjoint specialization, the \emph{Type} field is required with the selection of either director or actor. \\\\
-For the \emph{Studio} entity, the \emph{Studio Id} is required and unique. The name is also required. \\\\
-For the \emph{Movie} entity, the attribute \emph{Movie Id} is required and unique. The other required attributes are \emph{MPAA Rating}, \emph{Release Date}, \emph{Runtime}, and \emph{Genre}. The relationships \emph{Funds}. \emph{Acts In} and \emph{Directs} all have total participation meaning each \emph{Movie} entity must have at least one entry in these relationship tables. The \emph{MPAA Rating} must be one of the following: G, PG, PG-13, R, or NC-17. \\\\
-For the \emph{Watches} relationship, the \emph{Rating} attribute must be one of the following: 1, 2, 3, 4, or 5. Both of this relationship's attributes are required. \\\\
-For the \emph{Collection} entity, the \emph{Collection Id} is required and unique. \emph{Name} is also a required attribute. The reduction to table for this entity includes a required \emph{User Id} attribute as well.\\\\
-Lastly, for the \emph{User} entity, the \emph{Username} and \emph{Email} attributes are required and unique. The \emph{Password}, \emph{Name}, \emph{Creation Date}, and \emph{Last Access Date} are also required.
+Within the \emph{Person} entity, the \emph{Name} and \emph{Id} for each person is required and unique. There is also a foreign-key constraint on \emph{Name Id} which connects to the \emph{Name} entity.\\\\
+For the \emph{Studio} entity, the \emph{Studio Id} is required and unique. The name is also required. The \emph{Funds} relationship has two foreign key constraints on \emph{Movie Id} for the \emph{Movie} entity and \emph{Studio Id} for the \emph{Studio} entity.\\\\
+For the \emph{Movie} entity, the attribute \emph{Movie Id} is required and unique. The other required attributes are \emph{MPAA Rating}, \emph{Release Date}, \emph{Runtime}, and \emph{Genre}. The relationships \emph{Funds}. \emph{Acts In} and \emph{Directs} all have total participation meaning each \emph{Movie} entity must have at least one entry in these relationship tables. The \emph{MPAA Rating} must be one of the following: G, PG, PG-13, R, NR, or NC-17. There is also a foreign-key constraint for the \emph{Director Id} that connects to the \emph{Person} entity. The \emph{ActsIn} relationship has two foreign keys, \emph{Movie Id} and \emph{Person Id}, to connect it to the \emph{Movie} and \emph{Person} entities correspondingly.\\\\
+For the \emph{Genre} entity, the attribute \emph{Genre Id} is required and unique. \emph{Name} is also required. The \emph{MovieGenre} relationship has 2 foreign key constraints: one for \emph{Movie Id} to relate it to the \emph{Movie} entity and one for the \emph{Genre Id} to relate it to the \emph{Genre} entity.\\\\
+For the \emph{Watched} relationship, the \emph{Rating} attribute must be one of the following: 1, 2, 3, 4, or 5. There is a foreign key, \emph{Username}, to the \emph{User} entity and another, \emph{Movie Id}, to the \emph{Movie} entity. \\\\
+For the \emph{Collection} entity, the \emph{Collection Id} is required and unique. \emph{Name} is also a required attribute. The reduction to table for this entity includes a required \emph{Username} attribute as well that is a foreign key constraint to the \emph{User} entity.The relationship \emph{MoviesInCollection} has two foreign key constraints to \emph{Collection} entity, \emph{Collection Id}, and the \emph{Movie} entity, \emph{Movie Id}. \\\\
+Lastly, for the \emph{User} entity, the \emph{Username} and \emph{Email} attributes are required and unique. The \emph{Password}, \emph{Name}, \emph{Creation Date}, and \emph{Last Access Date} are also required. The relationship \emph{Following} has a foreign key constraint on \emph{Username} and \emph{Following Username} relating to the \emph{User} entity. 
 \subsection{Sample instance data}
 \subsubsection{Person Entity}
 \emph{1, Milo, Berry} \\
@@ -58,18 +72,32 @@ Person \emph{Gunnar Bachmann} acts in Movie \emph{Uncharted} \\
 Person \emph{Theo Cat} acts in Movie \emph{How to be a Cat}
 
 \subsubsection{Directs Relationship}
-Person \emph{Milo Berry} directs Movie\emph{The Cursed} \\
+Person \emph{Milo Berry} directs Movie \emph{The Cursed} \\
 Person \emph{Ari Wisenburn} directs Movie \emph{Scream} \\
-Person \emph{Noah Pelletier} directs Movie\emph{Studio 666} \\
-Person \emph{Noah Pelletier} directs Movie\emph{Dog} \\
-Person \emph{Theo Cat} directs Movie\emph{How to be a Cat: The Sequel}
+Person \emph{Noah Pelletier} directs Movie \emph{Studio 666} \\
+Person \emph{Noah Pelletier} directs Movie \emph{Dog} \\
+Person \emph{Theo Cat} directs Movie \emph{How to be a Cat: The Sequel}
 
 \subsubsection{Movie Entity}
-\emph{1, Uncharted, PG-13, 2/18/2022, 123 min, NULL, \{Action, Comedy\}} \\
-\emph{2, 1917, R, 1/10/2020, 142 min, 4.84, \{War, Dark\}} \\
-\emph{3, Spider-Man, PG-13, 4/1/2002, 94 min, 3.42, \{Superhero\}} \\
-\emph{4, Scream, R, 10/31/1993, 132 min, 4.56, \{Slasher, Horror\}} \\
-\emph{5, Make Happy, PG-13, 2/18/2016, 83 min, 4.10, \{Stand-up, Comedy\}}
+\emph{1, Uncharted, PG-13, 2/18/2022, 123 min, NULL} \\
+\emph{2, 1917, R, 1/10/2020, 142 min, 4.84} \\
+\emph{3, Spider-Man, PG-13, 4/1/2002, 94 min, 3.42}\\
+\emph{4, Scream, R, 10/31/1993, 132 min, 4.56} \\
+\emph{5, Make Happy, PG-13, 2/18/2016, 83 min, 4.10}
+
+\subsubsection{Genre Entity}
+\emph{1, Western} \\
+\emph{2, Crime} \\
+\emph{3, Dark} \\
+\emph{4, Superhero} \\
+\emph{5, Comedy}
+
+\subsubsection{MovieGenre Relationship}
+Genre \emph{Horror} classifies Movie \emph{Scream} \\
+Genre \emph{Action} classifies Movie \emph{Uncharted} \\
+Genre \emph{Comedy} classifies Movie \emph{Make Happy} \\
+Genre \emph{War} classifies Movie \emph{1917} \\
+Genre \emph{Superhero} classifies Movie \emph{Spider-Man} \\
 
 \subsubsection{Studio Entity}
 \emph{1, Fake Studio} \\
@@ -128,9 +156,138 @@ Movie \emph{Homeward Bound} comprises Collection \emph{Dog Movies} \\
 Movie \emph{Scream} comprises Collection \emph{Horror Movies} 
 
 \section{Implementation}
-Use this section to describe the overall implementation of your database. Include samples of SQL statements to create the tables (DDL statements) and a description of the ETL process, including examples of the SQL insert statements used to populate each table initially.
+\begin{lstlisting}
+create table p320_21.movie
+(
+    movie_id     int not null
+        constraint movie_pk
+            primary key,
+    title        varchar,
+    mpaa_rating  varchar,
+    runtime      int,
+    release_date date,
+    director_id  int
+        constraint movie_person_id_fk
+            references p320_21.person
+        constraint mpaa_rating check(mpaa_rating in ('G', 'PG', 'PG-13', 'R', 'NC-17', 'NR'))
+);
 
-Include also sample of the SQL insert statements used in your application program to insert new data in the database. Finally, add an appendix of all the SQL statements created in your application during Phase 4 and a description of the indexes created to boost the performance of your application.
+create unique index movie_movie_id_uindex
+    on p320_21.movie (movie_id);
+\end{lstlisting}
+\begin{lstlisting}
+create table p320_21."user"
+(
+    username        varchar not null
+        constraint user_pk
+            primary key,
+    name_id          int not null
+        constraint user_name_id_fk
+            references p320_21.name,
+    creation_date    date not null,
+    password         varchar not null,
+    email            varchar not null,
+    last_access_date date not null
+);
+
+create unique index user_username_uindex
+    on p320_21."user" (username);
+    
+create table p320_21.name
+(
+    id         SERIAL
+        constraint name_pk
+            primary key,
+    first_name varchar not null,
+    last_name  varchar not null
+);
+
+create unique index name_id_uindex
+    on p320_21.name (id);
+\end{lstlisting}
+For the 2 databases, \emph{Name} and \emph{Collection}, that would be added to in the application with unique ids with the \emph{serial} attribute allowing us to easily add to these tables without finding the previously added id and increment it to insert new data. 
+
+To upload data to our tables, we first sanitized and processed the data set we selected as well as creating dummy data for values that did not exist within that dataset. We then downloaded this sanitized data into separate CSV files for each table. We then used DataGrip's built in import CSV file to table functionality. We started with the tables that had no foreign keys: \emph{Name}, \emph{Genre}, and \emph{Studio}. Then we moved to the two entities with foreign keys \emph{Person} and \emph{Movie}. Then, we populated the relationship tables \emph{ActsIn}, \emph{Funds}, and \emph{MovieGenre}. If we had used insert statements, they would be similar to:
+\begin{lstlisting}
+insert into p320_21.name(name_id, first_name, last_name) values (1, 'First', 'Last');
+insert into p320_21.name(name_id, first_name, last_name) values (2, 'Second', 'Super Final');
+insert into p320_21.genre(genre_id, name) values (1, 'Crime');
+insert into p320_21.genre(genre_id, name) values (2, 'Horror');
+insert into p320_21.studio(studio_id, name) values (1, 'Test Studio');
+insert into p320_21.studio(studio_id, name) values (2, 'Test Studio 2');
+insert into p320_21.person(person_id, name_id) values (1, 1);
+insert into p320_21.person(person_id, name_id) values (2, 2);
+insert into p320_21.movie(movie_id, title, mpaa_rating, runtime, release_date, director_id) values (1, '1917', 'R', 230, '2020-04-06', 1);
+insert into p320_21.movie(movie_id, title, mpaa_rating, runtime, release_date, director_id) values (2, 'Spider-Man', 'PG-13', 183, '2021-12-17', 2);
+insert into p320_21.acts_in(movie_id, person_id) values (1, 1);
+insert into p320_21.acts_in(movie_id, person_id) values (2, 2);
+insert into p320_21.funds(movie_id, studio_id) values (1, 1);
+insert into p320_21.funds(movie_id, studio_id) values (2, 2);
+insert into p320_21.movie_genre(movie_id, genre_id) values (1, 1);
+insert into p320_21.movie_genre(movie_id, genre_id) values (2, 2);
+\end{lstlisting}
+
+For the tables that involve user interaction, \emph{User}; \emph{Collection}; \emph{Following}; \emph{MoviesInCollection}; and \emph{Watched}, we used the application insert statements to add data in these databases instead of bulk-loading all the data into the tables. These statements looked like:
+
+\begin{lstlisting}
+INSERT INTO p320_21.collection(name, username) VALUES ('test_name', 'test_username');
+INSERT INTO p320_21.collection(name, username) VALUES ('new collection', 'test_username_2');
+INSERT INTO p320_21.movies_in_collection(collection_id, movie_id) VALUES (1, 1);
+INSERT INTO p320_21.movies_in_collection(collection_id, movie_id) VALUES (2, 2);
+INSERT INTO p320_21."user" (username, name_id, creation_date, password, email, last_access_date) VALUES ('test_user', 1, '2022-03-18', 'password', 'test@test.com', '2022-03-18');
+INSERT INTO p320_21."user" (username, name_id, creation_date, password, email, last_access_date) VALUES ('test_user_2', 2, '2022-03-19', 'password_2', 'test2@test2.com', '2022-03-19');
+INSERT INTO p320_21.following (username, following_username) VALUES ('test_user', 'test_user_2');
+INSERT INTO p320_21.following (username, following_username) VALUES ('test_user_2', 'test_user');
+INSERT INTO p320_21.watched(username, movie_id, date_watched) VALUES ('test_user', 1, '2022-03-19');
+INSERT INTO p320_21.watched(username, movie_id, date_watched) VALUES ('test_user_2', 2, '2022-03-20');
+INSERT INTO p320_21.name(first_name, last_name) VALUES ('Milo', 'Berry') RETURNING id;
+INSERT INTO p320_21.name(first_name, last_name) VALUES ('Gunnar', 'Bachman') RETURNING id;
+\end{lstlisting}
+
+% – contains sample queries (2 for each table) for populating the data
+Here are a list of example queries we made to populate data in our application:
+\begin{lstlisting}
+-- Name
+SELECT first_name, last_name FROM p320_21.name WHERE id = 1;
+SELECT name_id FROM p320_21.name WHERE first_name = 'Sample' and last_name = 'Name';
+-- Studio
+SELECT name FROM p320_21.studio WHERE id = 1;
+SELECT studio_id, name FROM p320_21.studio WHERE name LIKE '%sample%';
+-- Genre
+SELECT name FROM p320_21.genre WHERE id = 1;
+SELECT genre_id, name FROM p320_21.studio WHERE name LIKE '%sample%';
+-- Person
+SELECT name.first_name, name.last_name FROM p320_21.person LEFT JOIN p320_21.name on person.name_id = name.id WHERE person.person_id = 1;
+SELECT person.id FROM p320_21.person LEFT JOIN p320_21.name on person.name_id = name.id WHERE name.first_name LIKE '%test%';
+-- Movie
+SELECT title, mpaa_rating, runtime / 60 AS hours, runtime % 60 AS minutes, release_date, date_watched, star_rating FROM p320_21.movie LEFT JOIN p320_21.watched ON movie.movie_id = watched.movie_id WHERE username = 'test_user' AND movie.movie_id = 1;
+SELECT id FROM p320_21.movie WHERE title LIKE '%test%';
+-- ActsIn
+SELECT person)id FROM p320_21.acts_in WHERE movie_id = 1;
+SELECT movie_id FROM p320_21.acts_in WHERE person_id = 1;
+-- MovieGenre
+SELECT movie_id FROM p320_21.movie_genre WHERE genre_id = 1;
+SELECT genre.name FROM p320_21.movie_genre LEFT JOIN p320_21.genre ON movie_genre.genre_id = genre.genre_id WHERE movie_genre.movie_id = 1;
+-- Funds
+SELECT movie_id FROM p320_21.funds WHERE studio_id = 1;
+SELECT studio.name FROM p320_21.funds LEFT JOIN p320_21.studio ON funds.studio_id = studio.studio_id WHERE funds.movie_id = 1;
+-- User
+SELECT * FROM p320_21."user" WHERE username = 'sample_user' LIMIT 1;
+SELECT * FROM p320_21."user" WHERE username = 'sample_user' AND password = 'password' LIMIT 1;
+-- Collection
+SELECT collection_id FROM p320_21.collection WHERE name = 'collection' AND username = 'test_user';
+SELECT collection_id FROM p320_21.collection WHERE username = 'test_user';
+-- Following
+SELECT following.following_username, name.first_name, name.last_name FROM p320_21.following LEFT JOIN p320_21."user" ON following.following_username = "user".username LEFT JOIN p320_21.name ON "user".name_id = name.id WHERE following.username = 'test_user';
+SELECT following_username FROM p320_21.following WHERE username = 'test_user';
+-- MoviesInCollection
+SELECT movie_id FROM p320_21.movies_in_collection WHERE collection_id = 1;
+SELECT movie.title FROM p320_21.movies_in_collection LEFT JOIN p320_21.movie ON movies_in_collection.movie_id = movie.movie_id WHERE movies_in_collection.collection_id = 1;
+-- Watched
+SELECT movie_id FROM p320_21.watched WHERE username = 'test_user';
+SELECT rating FROM p320_21.watched WHERE username = 'test user' and movie_id = 1;
+\end{lstlisting}
+%Finally, add an appendix of all the SQL statements created in your application during Phase 4 and a description of the indexes created to boost the performance of your application.
 \section{Data Analysis}
 \subsection{Hypothesis}
 Use this section to state the objectives of your data analysis; what are the observations you are expecting to find. Note that your final
@@ -194,7 +351,6 @@ about flavors is shown in Table~\ref{SAMPLE TABLE}.
 \label{SAMPLE FIGURE}
 \end{center}
 \end{figure}
-
 \section{Resources}
-Include in this section the resources you have used in your project beyond the normal code development such as data sets or data analytic tools (i.e. Weka, R).
+The dataset we used to populate our \emph{Movie} data table was https://www.kaggle.com/kaushikmetha/imdb-movies?select=imdb\_cleaned.csv. All other data was randomly generated.
 \end{document}
