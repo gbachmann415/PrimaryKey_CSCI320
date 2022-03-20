@@ -58,24 +58,32 @@ def get_movie(movie_id, username):
     curs = conn.cursor()
 
     # SQL
+    query = r"""SELECT title,
+                       mpaa_rating,
+                       runtime / 60 AS hours,
+                       runtime % 60 AS minutes,
+                       release_date,
+                       date_watched,
+                       star_rating
+                FROM p320_21.movie
+                LEFT JOIN p320_21.watched ON movie.movie_id = watched.movie_id
+                WHERE username = '{}' AND movie.movie_id = {};""".format(username, movie_id)
 
     # Execute SQL
-    curs.execute()
-    conn.commit()
+    curs.execute(query)
+    records = curs.fetchall()
+
+    # Save query result into a list (list of dict objects)
+    result_list = []
+    for record in records:
+      result_list.append(dict(zip(['title', 'mpaa_rating', 'runtimeHr', 'runtimeMin',
+                                   'releaseDate', 'lastWatched', 'rating'], record)))
 
     # Close the Database Cursor and Connection
     curs.close()
     conn.close()
 
-    return {
-        'title': 'Test Title',
-        'mpaa_rating': 'PG-13',
-        'runtimeHr': 2,
-        'runtimeMin': 4,
-        'releaseDate': '04-05-2020',
-        'lastWatched': None,
-        'rating': None
-    }
+    return result_list
 
 
 def watch_movie(movie_id, username):
