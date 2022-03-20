@@ -84,6 +84,7 @@ def rate_movie(movie_id, username, rating):
   """
   return
 
+
 def search_by_name(movie_name, sort_type):
   """
   Searches for a movie by name
@@ -199,6 +200,7 @@ def search_by_studio(studio_name, sort_type):
   print(result_list)
   return result_list
 
+
 def search_by_genre(genre_name, sort_type):
   """
   Searches for a movie by genre
@@ -226,6 +228,7 @@ def search_by_genre(genre_name, sort_type):
 
   print(result_list)
   return result_list
+
 
 def get_sort_type_query_from_name(sort_name):
   """
