@@ -190,7 +190,9 @@ create table p320_21.watched
         constraint watched_movie_movie_id_fk
             references p320_21.movie,
     date_watched date,
-    star_rating  float,
+    star_rating  float
+        constraint watched_star_rating_check
+            CHECK(star_rating >= 1 AND star_rating <= 5),
     constraint watched_pk
         primary key (username, movie_id, date_watched)
 );
