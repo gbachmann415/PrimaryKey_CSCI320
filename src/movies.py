@@ -72,19 +72,14 @@ def get_movie(movie_id, username):
 
     # Execute SQL
     curs.execute(query)
-    records = curs.fetchall()
-
-    # Save query result into a list (list of dict objects)
-    result_list = []
-    for record in records:
-      result_list.append(dict(zip(['title', 'mpaa_rating', 'runtimeHr', 'runtimeMin',
-                                   'releaseDate', 'lastWatched', 'rating'], record)))
+    record = curs.fetchone()
 
     # Close the Database Cursor and Connection
     curs.close()
     conn.close()
 
-    return result_list
+    return dict(zip(['title', 'mpaa_rating', 'runtimeHr', 'runtimeMin',
+                     'releaseDate', 'lastWatched', 'rating'], record))
 
 
 def watch_movie(movie_id, username):
@@ -169,7 +164,10 @@ def search_by_name(movie_name, sort_type):
              'rating']
             , record)))
 
-    print(result_list)
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return result_list
 
 
@@ -199,7 +197,10 @@ def search_by_release_date(release_date, sort_type):
              'rating']
             , record)))
 
-    print(result_list)
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return result_list
 
 
@@ -229,7 +230,10 @@ def search_by_cast(cast_member, sort_type):
              'rating']
             , record)))
 
-    print(result_list)
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return result_list
 
 
@@ -259,7 +263,9 @@ def search_by_studio(studio_name, sort_type):
              'rating']
             , record)))
 
-    print(result_list)
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
     return result_list
 
 
@@ -289,7 +295,10 @@ def search_by_genre(genre_name, sort_type):
              'rating']
             , record)))
 
-    print(result_list)
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return result_list
 
 

@@ -28,11 +28,12 @@ class MoviesScreen(GridLayout):
         studio = "" if movie.get("studio") is None else movie.get("studio").replace(", ", ",\n")
         minute = f'0{movie.get("runtimeMin")}' if movie.get(
           "runtimeMin") < 10 else f'{movie.get("runtimeMin")}'
+        rating = "N/A" if self.movie.get("rating") is None else self.movie.get("rating")
         button_text = f'Title: {movie.get("title")}\n' + \
                       f'MPAA Rating: {movie.get("mpaa_rating")}\n' + \
                       f'Runtime: {movie.get("runtimeHr")}:{minute}\n' + \
                       f'Release Date: {movie.get("releaseDate")}\n' + \
-                      f'Rating: {movie.get("rating")}\n' +\
+                      f'Rating: {rating}\n' +\
                       f'Director: {movie.get("director")}\n' +\
                       f'Cast Member(s): {cast}\n' +\
                       f'Studio(s): {studio}'
