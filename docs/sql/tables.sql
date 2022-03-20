@@ -87,6 +87,7 @@ create table p320_21.movie
     director_id  int
         constraint movie_person_id_fk
             references p320_21.person
+        constraint mpaa_rating check(mpaa_rating in ('G', 'PG', 'PG-13', 'R', 'NC-17', 'NR'))
 );
 
 create unique index movie_movie_id_uindex
