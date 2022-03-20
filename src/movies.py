@@ -48,217 +48,264 @@ def connect_to_db():
 
 
 def get_movie(movie_id, username):
-  """
+    """
   Gets the data for a specific movie INCLUDING the users latest watched date and current rating
   :param movie_id: the movie id to get data for
   :param username: the username of the logged in user
   """
-  return {
-    'title': 'Test Title',
-    'mpaa_rating': 'PG-13',
-    'runtimeHr': 2,
-    'runtimeMin': 4,
-    'releaseDate': '04-05-2020',
-    'lastWatched': None,
-    'rating': None
-  }
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL
+
+    # Execute SQL
+    curs.execute()
+    conn.commit()
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
+    return {
+        'title': 'Test Title',
+        'mpaa_rating': 'PG-13',
+        'runtimeHr': 2,
+        'runtimeMin': 4,
+        'releaseDate': '04-05-2020',
+        'lastWatched': None,
+        'rating': None
+    }
 
 
 def watch_movie(movie_id, username):
-  """
+    """
   Marks a movie as watched by the given user
   :param movie_id: the id of the movie watched
   :param username: the username of the user that has watched the movie
   :return: None
   """
-  return
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL
+
+    # Execute SQL
+    curs.execute()
+    conn.commit()
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
+    return
 
 
 def rate_movie(movie_id, username, rating):
-  """
+    """
   Rates a movie from a specified user
   :param movie_id: the id of the movie to be rated
   :param username: the username of the user rating the film
   :param rating: the rating the user is giving the film
   :return: None
   """
-  return
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL
+
+    # Execute SQL
+    curs.execute()
+    conn.commit()
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
+    return
 
 
 def search_by_name(movie_name, sort_type):
-  """
+    """
   Searches for a movie by name
   :param movie_name: the name to search for
   :param sort_type: the sort type for the search
   :return: A list of movies that have titles matching the search name
   """
-  # Establish Database Connection
-  conn = connect_to_db()
-  curs = conn.cursor()
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
 
-  where_statement = f"WHERE movie.title LIKE '%{movie_name}%''"
-  search_query = get_full_search_query(where_statement, sort_type)
+    where_statement = f"WHERE movie.title LIKE '%{movie_name}%''"
+    search_query = get_full_search_query(where_statement, sort_type)
 
-  # Execute the SQL to get search results
-  curs.execute(search_query)
-  records = curs.fetchall()
+    # Execute the SQL to get search results
+    curs.execute(search_query)
+    records = curs.fetchall()
 
-  # Save query result into a list (list of dict objects)
-  result_list = []
-  for record in records:
-    result_list.append(dict(zip(
-      ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating', 'rating']
-      , record)))
+    # Save query result into a list (list of dict objects)
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(
+            ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating',
+             'rating']
+            , record)))
 
-  print(result_list)
-  return result_list
+    print(result_list)
+    return result_list
 
 
 def search_by_release_date(release_date, sort_type):
-  """
+    """
   Searches for a movie by release data
   :param release_date: the release data to search for
   :param sort_type: the sort type for the search
   :return: A list of movies that have release dates matching the search date
   """
-  # Establish Database Connection
-  conn = connect_to_db()
-  curs = conn.cursor()
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
 
-  where_statement = f"WHERE to_char(movie.release_date, 'DD/MM/YYYY') LIKE '%{release_date}%''"
-  search_query = get_full_search_query(where_statement, sort_type)
+    where_statement = f"WHERE to_char(movie.release_date, 'DD/MM/YYYY') LIKE '%{release_date}%''"
+    search_query = get_full_search_query(where_statement, sort_type)
 
-  # Execute the SQL to get search results
-  curs.execute(search_query)
-  records = curs.fetchall()
+    # Execute the SQL to get search results
+    curs.execute(search_query)
+    records = curs.fetchall()
 
-  # Save query result into a list (list of dict objects)
-  result_list = []
-  for record in records:
-    result_list.append(dict(zip(
-      ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating', 'rating']
-      , record)))
+    # Save query result into a list (list of dict objects)
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(
+            ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating',
+             'rating']
+            , record)))
 
-  print(result_list)
-  return result_list
+    print(result_list)
+    return result_list
 
 
 def search_by_cast(cast_member, sort_type):
-  """
+    """
   Searches for a movie by cast member
   :param cast_member: the cast member name to search for
   :param sort_type: the sort type for the search
   :return: A list of movies that have cast members matching the search name
   """
-  # Establish Database Connection
-  conn = connect_to_db()
-  curs = conn.cursor()
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
 
-  where_statement = f"WHERE actors.actors_list LIKE '%{cast_member}%'"
-  search_query = get_full_search_query(where_statement, sort_type)
+    where_statement = f"WHERE actors.actors_list LIKE '%{cast_member}%'"
+    search_query = get_full_search_query(where_statement, sort_type)
 
-  # Execute the SQL to get search results
-  curs.execute(search_query)
-  records = curs.fetchall()
+    # Execute the SQL to get search results
+    curs.execute(search_query)
+    records = curs.fetchall()
 
-  # Save query result into a list (list of dict objects)
-  result_list = []
-  for record in records:
-    result_list.append(dict(zip(
-      ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating', 'rating']
-      , record)))
+    # Save query result into a list (list of dict objects)
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(
+            ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating',
+             'rating']
+            , record)))
 
-  print(result_list)
-  return result_list
+    print(result_list)
+    return result_list
 
 
 def search_by_studio(studio_name, sort_type):
-  """
+    """
   Searches for a movie by studio name
   :param studio_name: the studio name to search for
   :param sort_type: the sort type for the search
   :return: A list of movies that have studios matching the search name
   """
-  # Establish Database Connection
-  conn = connect_to_db()
-  curs = conn.cursor()
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
 
-  where_statement = f"WHERE s.studios LIKE '%{studio_name}%'"
-  search_query = get_full_search_query(where_statement, sort_type)
+    where_statement = f"WHERE s.studios LIKE '%{studio_name}%'"
+    search_query = get_full_search_query(where_statement, sort_type)
 
-  # Execute the SQL to get search results
-  curs.execute(search_query)
-  records = curs.fetchall()
+    # Execute the SQL to get search results
+    curs.execute(search_query)
+    records = curs.fetchall()
 
-  # Save query result into a list (list of dict objects)
-  result_list = []
-  for record in records:
-    result_list.append(dict(zip(
-      ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating', 'rating']
-      , record)))
+    # Save query result into a list (list of dict objects)
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(
+            ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating',
+             'rating']
+            , record)))
 
-  print(result_list)
-  return result_list
+    print(result_list)
+    return result_list
 
 
 def search_by_genre(genre_name, sort_type):
-  """
+    """
   Searches for a movie by genre
   :param genre_name: the name of the genre to search for
   :param sort_type: the sort type for the search
   :return: A list of movies that have genre matching the search genre
   """
-  # Establish Database Connection
-  conn = connect_to_db()
-  curs = conn.cursor()
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
 
-  where_statement = f"WHERE genre.genres LIKE '%{genre_name}%'"
-  search_query = get_full_search_query(where_statement, sort_type)
+    where_statement = f"WHERE genre.genres LIKE '%{genre_name}%'"
+    search_query = get_full_search_query(where_statement, sort_type)
 
-  # Execute the SQL to get search results
-  curs.execute(search_query)
-  records = curs.fetchall()
+    # Execute the SQL to get search results
+    curs.execute(search_query)
+    records = curs.fetchall()
 
-  # Save query result into a list (list of dict objects)
-  result_list = []
-  for record in records:
-    result_list.append(dict(zip(
-      ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating', 'rating']
-      , record)))
+    # Save query result into a list (list of dict objects)
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(
+            ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating',
+             'rating']
+            , record)))
 
-  print(result_list)
-  return result_list
+    print(result_list)
+    return result_list
 
 
 def get_sort_type_query_from_name(sort_name):
-  """
+    """
   Gets the ORDER BY statement for the query
   :param sort_name: The sort name to get the ORDER BY for
   :return: string of order by query
   """
-  if sort_name == 'Default':
-    return "ORDER BY movie.title, extract(YEAR from movie.release_date)"
-  elif sort_name == 'Movie Name':
-    return "ORDER BY movie.title"
-  elif sort_name == 'Studio':
-    return "ORDER BY s.studios"
-  elif sort_name == 'Genre':
-    return "ORDER BY genre.genres"
-  elif sort_name == 'Released Year':
-    return "ORDER BY extract(YEAR from movie.release_date)"
-  else:
-    return
+    if sort_name == 'Default':
+        return "ORDER BY movie.title, extract(YEAR from movie.release_date)"
+    elif sort_name == 'Movie Name':
+        return "ORDER BY movie.title"
+    elif sort_name == 'Studio':
+        return "ORDER BY s.studios"
+    elif sort_name == 'Genre':
+        return "ORDER BY genre.genres"
+    elif sort_name == 'Released Year':
+        return "ORDER BY extract(YEAR from movie.release_date)"
+    else:
+        return
 
 
 def get_full_search_query(where_clause, sort_name):
-  """
+    """
   Gets the entire query for the search given the where clause and the sort type
   :param where_clause: The where clause for the query
   :param sort_name: The sort type name for the query
   :return: a string of the query
   """
-  sort_statement = get_sort_type_query_from_name(sort_name)
-  return f"""
+    sort_statement = get_sort_type_query_from_name(sort_name)
+    return f"""
       select
            movie.movie_id,
            movie.title,
