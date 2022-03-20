@@ -14,6 +14,7 @@ Description:
 from config import DB_USERNAME, DB_PASSWORD, DB_NAME
 import psycopg2
 from sshtunnel import SSHTunnelForwarder
+from datetime import datetime
 
 
 def connect_to_db():
@@ -97,10 +98,15 @@ def watch_movie(movie_id, username):
     conn = connect_to_db()
     curs = conn.cursor()
 
+    # Get current date
+    current_date = datetime.today().strftime('%Y-%m-%d')
+
     # SQL
+    query = r"""INSERT INTO p320_21.watched(username, movie_id, date_watched)
+                VALUES ('{}', {}, '{}');""".format(username, movie_id, current_date)
 
     # Execute SQL
-    curs.execute()
+    curs.execute(query)
     conn.commit()
 
     # Close the Database Cursor and Connection
@@ -123,9 +129,11 @@ def rate_movie(movie_id, username, rating):
     curs = conn.cursor()
 
     # SQL
+    query = r"""UPDATE p320_21.watched SET star_rating = {}
+                WHERE username = '{}' AND movie_id = {};""".format(rating, username, movie_id)
 
     # Execute SQL
-    curs.execute()
+    curs.execute(query)
     conn.commit()
 
     # Close the Database Cursor and Connection
