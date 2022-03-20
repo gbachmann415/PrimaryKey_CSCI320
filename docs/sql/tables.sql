@@ -6,7 +6,7 @@ create table p320_21.genre
     genre_id int not null
         constraint genre_pk
             primary key,
-    name     varchar
+    name     varchar not null
 );
 
 create unique index genre_genre_id_uindex
@@ -19,7 +19,7 @@ create table p320_21.studio
     studio_id int not null
         constraint studio_pk
             primary key,
-    name      varchar
+    name      varchar not null
 );
 
 create unique index studio_studio_id_uindex
@@ -32,8 +32,8 @@ create table p320_21.name
     id         SERIAL
         constraint name_pk
             primary key,
-    first_name varchar,
-    last_name  varchar
+    first_name varchar not null,
+    last_name  varchar not null
 );
 
 create unique index name_id_uindex
@@ -46,13 +46,13 @@ create table p320_21."user"
     username        varchar not null
         constraint user_pk
             primary key,
-    name_id          int
+    name_id          int not null
         constraint user_name_id_fk
             references p320_21.name,
-    creation_date    date,
-    password         varchar,
-    email            varchar,
-    last_access_date date
+    creation_date    date not null,
+    password         varchar not null,
+    email            varchar not null,
+    last_access_date date not null
 );
 
 create unique index user_username_uindex
@@ -67,7 +67,7 @@ create table p320_21.person
             primary key
         constraint person_name_id_fk
             references p320_21.name,
-    name_id int
+    name_id int not null
 );
 
 create unique index person_id_uindex
@@ -111,10 +111,10 @@ create table p320_21.movie_genre
 ----------------------------------------------------------------------------------
 create table p320_21.acts_in
 (
-    movie_id  int
+    movie_id  int not null
         constraint acts_in_movie__fk
             references p320_21.movie,
-    person_id int
+    person_id int not null
         constraint acts_in_person__fk
             references p320_21.person,
     constraint acts_in_pk
@@ -125,10 +125,10 @@ create table p320_21.acts_in
 ----------------------------------------------------------------------------------
 create table p320_21.funds
 (
-    movie_id  int
+    movie_id  int not null
         constraint funds_movie_movie_id_fk
             references p320_21.movie,
-    studio_id int
+    studio_id int not null
         constraint funds_studio_studio_id_fk
             references p320_21.studio,
     constraint funds_pk
@@ -142,8 +142,8 @@ create table p320_21.collection
     collection_id serial not null
         constraint collection_pk
             primary key,
-    name          varchar,
-    username      varchar
+    name          varchar not null,
+    username      varchar not null
         constraint collection_user_username_fk
             references p320_21."user"
 );
@@ -155,10 +155,10 @@ create unique index collection_collection_id_uindex
 ----------------------------------------------------------------------------------
 create table p320_21.movies_in_collection
 (
-    collection_id int
+    collection_id int not null
         constraint movies_in_collection_collection_collection_id_fk
             references p320_21.collection,
-    movie_id      int
+    movie_id      int not null
         constraint movies_in_collection_movie_movie_id_fk
             references p320_21.movie,
     constraint movies_in_collection_pk
@@ -169,10 +169,10 @@ create table p320_21.movies_in_collection
 ----------------------------------------------------------------------------------
 create table p320_21.following
 (
-    username           varchar
+    username           varchar not null
         constraint following_user_username_fk
             references p320_21."user",
-    following_username varchar
+    following_username varchar not null
         constraint following_user_username_fk_2
             references p320_21."user",
     constraint following_pk
@@ -183,10 +183,10 @@ create table p320_21.following
 ----------------------------------------------------------------------------------
 create table p320_21.watched
 (
-    username     varchar
+    username     varchar not null
         constraint watched_user_username_fk
             references p320_21."user",
-    movie_id     int
+    movie_id     int not null
         constraint watched_movie_movie_id_fk
             references p320_21.movie,
     date_watched date,
