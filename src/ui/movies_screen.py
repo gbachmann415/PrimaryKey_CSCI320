@@ -28,7 +28,7 @@ class MoviesScreen(GridLayout):
         studio = "" if movie.get("studio") is None else movie.get("studio").replace(", ", ",\n")
         minute = f'0{movie.get("runtimeMin")}' if movie.get(
           "runtimeMin") < 10 else f'{movie.get("runtimeMin")}'
-        rating = "N/A" if self.movie.get("rating") is None else self.movie.get("rating")
+        rating = "N/A" if movie.get("rating") is None else movie.get("rating")
         button_text = f'Title: {movie.get("title")}\n' + \
                       f'MPAA Rating: {movie.get("mpaa_rating")}\n' + \
                       f'Runtime: {movie.get("runtimeHr")}:{minute}\n' + \
@@ -48,4 +48,5 @@ class MoviesScreen(GridLayout):
     Navigates the user to a specific movie
     :param button: the button selected
     """
+    print(button.ids.get('movie_id'))
     self.parent.update_child('Movie', movie_id=button.ids.get('movie_id'))

@@ -74,6 +74,19 @@ def get_movie(movie_id, username):
     curs.execute(query)
     record = curs.fetchone()
 
+    if record is None:
+        query = r"""SELECT title,
+                       mpaa_rating,
+                       runtime / 60 AS hours,
+                       runtime % 60 AS minutes,
+                       release_date
+                FROM p320_21.movie
+                WHERE movie.movie_id = {};""".format(movie_id)
+
+        # Execute SQL
+        curs.execute(query)
+        record = curs.fetchone()
+
     # Close the Database Cursor and Connection
     curs.close()
     conn.close()
@@ -149,7 +162,7 @@ def search_by_name(movie_name, sort_type):
     conn = connect_to_db()
     curs = conn.cursor()
 
-    where_statement = f"WHERE movie.title LIKE '%{movie_name}%''"
+    where_statement = f"WHERE movie.title LIKE '%{movie_name}%'"
     search_query = get_full_search_query(where_statement, sort_type)
 
     # Execute the SQL to get search results

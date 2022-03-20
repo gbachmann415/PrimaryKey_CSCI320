@@ -29,7 +29,12 @@ class CollectionsScreen(GridLayout):
     Gets the collections for the user and adds the widgets
     """
     self.collections = collections.get_collections_for_user(self.username)
+    print(self.collections)
     for collection in self.collections:
+      if collection.get('lengthHr') is None or collection.get('lengthMin') is None:
+        collection['lengthHr'] = 0
+        collection['lengthMin'] = 0
+
       button_text = f"{collection.get('name')}\nNumber of Movies: {collection.get('numMovies')}" +\
                     f"\nTotal Length: {collection.get('lengthHr')}:"
       if collection.get('lengthMin') < 10:
@@ -52,7 +57,7 @@ class CollectionsScreen(GridLayout):
     Creates a new collection and updates the user collections
     :param button: the button clicked
     """
-    collections.add_collection(self.username)
+    collections.add_collection(self.username, self.newcollection.text)
     self.newcollection.text = ''
     self.remove_widget(self.children[-1])
     self.add_widget(BoxLayout(), len(self.children))
