@@ -280,6 +280,3 @@ def test():
 
     return
 
-#TODO function to load in test data
-
-# test()
