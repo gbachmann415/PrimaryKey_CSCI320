@@ -52,7 +52,7 @@ create table p320_21."user"
     creation_date    date not null,
     password         varchar not null,
     email            varchar not null,
-    last_access_date date not null
+    last_access_date timestamp not null
 );
 
 create unique index user_username_uindex
@@ -189,7 +189,7 @@ create table p320_21.watched
     movie_id     int not null
         constraint watched_movie_movie_id_fk
             references p320_21.movie,
-    date_watched date,
+    date_watched timestamp,
     star_rating  float
         constraint watched_star_rating_check
             CHECK(star_rating >= 1 AND star_rating <= 5),
