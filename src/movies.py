@@ -107,7 +107,7 @@ def watch_movie(movie_id, username):
     curs = conn.cursor()
 
     # Get current date
-    current_date = datetime.today().strftime('%Y-%m-%d')
+    current_date = datetime.today()
 
     # SQL
     query = r"""INSERT INTO p320_21.watched(username, movie_id, date_watched)

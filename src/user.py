@@ -61,7 +61,7 @@ def login_user(username, password):
 
 
     # Save timestamp for last_access_date
-    current_date = datetime.today().strftime('%Y-%m-%d')
+    current_date = datetime.today()
     last_access_date = current_date
 
     # SQL statement to log in the user (check if creds valid)
@@ -106,7 +106,7 @@ def create_user(username, password, first_name, last_name, email):
     curs = conn.cursor()
 
     # Get current datetime for creation_date and last_access_date
-    current_date = datetime.today().strftime('%Y-%m-%d')
+    current_date = datetime.today()
 
     # Create/store name_id, creation_date, and last_access_date values
     creation_date = current_date
@@ -133,8 +133,7 @@ def create_user(username, password, first_name, last_name, email):
     name_id = curs.fetchone()[0]
 
     insert_user = r"""INSERT INTO p320_21."user" (username, name_id, creation_date, password, email, last_access_date)
-                      VALUES ('{}', {}, '{}', '{}', '{}', '{}');""".format(username, name_id, creation_date,
-                                                                             password, email, last_access_date)
+                      VALUES ('{}', {}, '{}', '{}', '{}', '{}');""".format(username, name_id, creation_date, password, email, last_access_date)
     curs.execute(insert_user)
     conn.commit()
 
@@ -272,10 +271,10 @@ def search_user(user_email):
 
 
 def temp_tests():
-    # print(create_user('test1', 'test1pw', 'Gunnar', 'Bachmann', 'test1@gmail.com'))
-    # print(create_user('test2', 'test2pw', 'Bob', 'Dylan', 'test2@gmail.com'))
-    # print(create_user('test3', 'test3pw', 'Jonny', 'Appleseed', 'test3@gmail.com'))
-    # print(create_user('test4', 'test4pw', 'Sam', 'Hunt', 'test4@gmail.com'))
+    print(create_user('test1', 'test1pw', 'Gunnar', 'Bachmann', 'test1@gmail.com'))
+    print(create_user('test2', 'test2pw', 'Bob', 'Dylan', 'test2@gmail.com'))
+    print(create_user('test3', 'test3pw', 'Jonny', 'Appleseed', 'test3@gmail.com'))
+    print(create_user('test4', 'test4pw', 'Sam', 'Hunt', 'test4@gmail.com'))
     # print(login_user('test1', 'test1pw'))
     # follow_user('test1', 'test2')
     # follow_user('test1', 'test3')
@@ -287,4 +286,8 @@ def temp_tests():
 
 #TODO function to load in test data
 
-# temp_tests()
+temp_tests()
+
+# current_date = datetime.today().strftime('%Y-%m-%d')
+# print(datetime.today())
+# print(current_date)
