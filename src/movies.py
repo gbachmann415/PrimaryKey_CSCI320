@@ -117,6 +117,21 @@ def watch_movie(movie_id, username):
     curs.execute(query)
     conn.commit()
 
+    # Update rating if necessary
+    curs.execute(r"""SELECT star_rating
+                    FROM p320_21.watched
+                    WHERE username = '{}' AND movie_id = {} 
+                    AND star_rating IS NOT NULL;""".format(username, movie_id))
+    if curs.fetchone() is not None:
+        # Close the Database Cursor and Connection
+        curs.close()
+        conn.close()
+        return
+    rating = curs.fetchone()[0]
+    curs.execute(r"""UPDATE p320_21.watched SET star_rating = {}
+                     WHERE username = '{}' AND movie_id = {};""".format(rating, username, movie_id))
+    conn.commit()
+
     # Close the Database Cursor and Connection
     curs.close()
     conn.close()
