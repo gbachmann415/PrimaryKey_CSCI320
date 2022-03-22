@@ -53,7 +53,8 @@ def main():
                      DROP TABLE p320_21."user" CASCADE;
                      DROP TABLE p320_21.watched CASCADE;"""
 
-    create_tables = """"""
+    tables_sql_file = open(r'C:\Users\gbach\OneDrive\Documents\GitHub\PrimaryKey_CSCI320\docs\sql\tables.sql')
+    create_tables = tables_sql_file.read()
 
     curs.execute(drop_tables)
     conn.commit()
