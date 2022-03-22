@@ -28,7 +28,7 @@ WHERE username = '{}';
 ----
 SELECT DISTINCT movie_id, star_rating
 FROM p320_21.watched
-WHERE username = '{}'
+WHERE username = 'test1'
 ORDER BY star_rating DESC
 LIMIT 10;
 ----
@@ -36,19 +36,30 @@ LIMIT 10;
 ----
 SELECT DISTINCT movie_id, COUNT(movie_id)
 FROM p320_21.watched
-WHERE username = '{}'
+WHERE username = 'test1'
 GROUP BY movie_id
 ORDER BY COUNT(movie_id) DESC
 LIMIT 10;
 ----
 -- Top 10 movies (Combination of highest rating and most plays)
+-- NOTE: ASK ABOUT HOW HE WANTS THE COMBINATION OF THE TWO.
 ----
-SELECT DISTINCT movie_id, COUNT(movie_id), star_rating
-FROM p320_21.watched
-WHERE username = '{}'
-GROUP BY movie_id, star_rating
-ORDER BY COUNT(movie_id) DESC, star_rating DESC
-LIMIT 10;
+-- SELECT DISTINCT movie_id, COUNT(movie_id), star_rating
+-- FROM p320_21.watched
+-- WHERE username = 'test1'
+-- GROUP BY movie_id, star_rating
+-- ORDER BY COUNT(movie_id) DESC, star_rating DESC
+-- LIMIT 10;
+
+-- SELECT movie_id,
+--        count(movie_id) as watch_count,
+--        star_rating,
+--        row_number() over (partition by movie_id order by count(movie_id) desc, star_rating desc) as rank
+-- FROM p320_21.watched
+-- WHERE username = 'test1'
+-- GROUP BY movie_id, star_rating
+-- LIMIT 10;
+
 ---------------------------------------------------------------
 -- Recommendation Features
 ---------------------------------------------------------------
@@ -56,7 +67,12 @@ LIMIT 10;
 ----
 -- Top 20 most popular movies in the last 90 days (rolling)
 ----
-
+SELECT movie_id, COUNT(movie_id)
+FROM p320_21.watched
+WHERE date_watched > current_date - interval '90' day
+GROUP BY movie_id
+ORDER BY COUNT(movie_id) DESC
+LIMIT 20;
 ----
 -- Top 20 most popular movies among my friends
 ----
