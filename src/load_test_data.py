@@ -17,12 +17,12 @@ from user import create_user, follow_user
 from src.collections import add_collection, add_movie_to_collection
 
 # collections = ['Collection1', 'Collection2', 'Collection3', 'Collection4', 'Collection5']
-collection1_movies = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-collection2_movies = [25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
+collection1_movies = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20]
+collection2_movies = [25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 90, 95, 100]
 collection3_movies = [105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170]
 collection4_movies = [22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56]
 collection5_movies = [180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310]
-collection6_movies = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+collection6_movies = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18, 20]
 
 
 def main():
