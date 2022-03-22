@@ -268,18 +268,3 @@ def search_user(user_email):
     conn.close()
 
     return result_list
-
-
-def temp_tests():
-    # print(create_user('test1', 'test1pw', 'Gunnar', 'Bachmann', 'test1@gmail.com'))
-    # print(create_user('test2', 'test2pw', 'Bob', 'Dylan', 'test2@gmail.com'))
-    # print(create_user('test3', 'test3pw', 'Jonny', 'Appleseed', 'test3@gmail.com'))
-    # print(create_user('test4', 'test4pw', 'Sam', 'Hunt', 'test4@gmail.com'))
-    # print(login_user('test1', 'test1pw'))
-    # follow_user('test1', 'test2')
-    # follow_user('test1', 'test3')
-    # follow_user('test1', 'test4')
-    # print(get_user_following('test'))
-    # unfollow_user('test1', 'test3')
-    # print(search_user('test1@gmail.com'))
-    return

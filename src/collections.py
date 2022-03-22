@@ -261,22 +261,3 @@ def add_movie_to_collection(username, collection_name, movie_id):
 
     return
 
-
-def test():
-    # add_collection('test1', 'testCollection1')
-    # add_collection('test1', 'testCollection2')
-    # add_movie_to_collection('test1', 'testCollection1', 1)
-    # add_movie_to_collection('test1', 'testCollection1', 2)
-    # add_movie_to_collection('test1', 'testCollection2', 3)
-    # add_movie_to_collection('test1', 'testCollection2', 4)
-    # add_movie_to_collection('test1', 'testCollection2', 5)
-    # add_movie_to_collection('test1', 'testCollection2', 6)
-    # print(get_collections_for_user('test1'))
-    # update_collection_name(1, 'testCollection1')
-    # print(get_movies_in_collection(1))
-    # delete_movie_from_collection(1, 1)
-    # delete_movie_from_collection(1, 2)
-    # delete_collection(1)
-
-    return
-
