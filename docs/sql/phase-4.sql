@@ -26,7 +26,7 @@ WHERE username = '{}';
 ----
 -- Top 10 movies (by highest rating)
 ----
-SELECT DISTINCT movie_id
+SELECT DISTINCT movie_id, star_rating
 FROM p320_21.watched
 WHERE username = '{}'
 ORDER BY star_rating DESC
@@ -34,17 +34,19 @@ LIMIT 10;
 ----
 -- Top 10 movies (most plays)
 ----
-SELECT DISTINCT movie_id
+SELECT DISTINCT movie_id, COUNT(movie_id)
 FROM p320_21.watched
 WHERE username = '{}'
+GROUP BY movie_id
 ORDER BY COUNT(movie_id) DESC
 LIMIT 10;
 ----
 -- Top 10 movies (Combination of highest rating and most plays)
 ----
-SELECT DISTINCT movie_id
+SELECT DISTINCT movie_id, COUNT(movie_id), star_rating
 FROM p320_21.watched
 WHERE username = '{}'
+GROUP BY movie_id, star_rating
 ORDER BY COUNT(movie_id) DESC, star_rating DESC
 LIMIT 10;
 ---------------------------------------------------------------
