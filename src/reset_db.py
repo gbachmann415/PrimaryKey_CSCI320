@@ -53,12 +53,16 @@ def main():
                      DROP TABLE p320_21."user" CASCADE;
                      DROP TABLE p320_21.watched CASCADE;"""
 
-    tables_sql_file = open(r'C:\Users\gbach\OneDrive\Documents\GitHub\PrimaryKey_CSCI320\docs\sql\tables.sql')
+    tables_sql_file = open(r'../docs/sql/tables.sql')
     create_tables = tables_sql_file.read()
+    add_perms_file = open('../docs/sql/permissions.sql')
+    add_perms = add_perms_file.read()
 
     curs.execute(drop_tables)
     conn.commit()
     curs.execute(create_tables)
+    conn.commit()
+    curs.execute(add_perms)
     conn.commit()
 
     return

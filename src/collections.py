@@ -68,7 +68,7 @@ def get_collections_for_user(username):
               LEFT JOIN p320_21.movie
                   ON movies_in_collection.movie_id = movie.movie_id
               WHERE collection.username = '{}'
-              GROUP BY 1, 2;""".format(username)
+              GROUP BY 1, 2, collection.name ORDER BY collection.name;""".format(username)
 
     # Search for users
     curs.execute(sql)
