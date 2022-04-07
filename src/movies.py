@@ -63,8 +63,8 @@ def get_movie(movie_id, username):
                        mpaa_rating,
                        runtime / 60 AS hours,
                        runtime % 60 AS minutes,
-                       release_date,
-                       date_watched,
+                       to_char(release_date, 'MM-dd-yyyy'),
+                       to_char(date_watched, 'MM-dd-yyyy'),
                        star_rating
                 FROM p320_21.movie
                 LEFT JOIN p320_21.watched ON movie.movie_id = watched.movie_id
@@ -79,7 +79,7 @@ def get_movie(movie_id, username):
                        mpaa_rating,
                        runtime / 60 AS hours,
                        runtime % 60 AS minutes,
-                       to_char(movie.release_date, 'MM-dd-yyyy')
+                       to_char(release_date, 'MM-dd-yyyy')
                 FROM p320_21.movie
                 WHERE movie.movie_id = {};""".format(movie_id)
 
@@ -122,11 +122,13 @@ def watch_movie(movie_id, username):
                     FROM p320_21.watched
                     WHERE username = '{}' AND movie_id = {} 
                     AND star_rating IS NOT NULL;""".format(username, movie_id))
-    if curs.fetchone() is not None:
+
+    if curs.fetchone() is None:
         # Close the Database Cursor and Connection
         curs.close()
         conn.close()
         return
+
     rating = curs.fetchone()[0]
     curs.execute(r"""UPDATE p320_21.watched SET star_rating = {}
                      WHERE username = '{}' AND movie_id = {};""".format(rating, username, movie_id))
@@ -199,7 +201,7 @@ def search_by_name(movie_name, sort_type):
     return result_list
 
 
-def search_by_releaseDate(releaseDate, sort_type):
+def search_by_release_date(releaseDate, sort_type):
     """
   Searches for a movie by release data
   :param releaseDate: the release data to search for
@@ -210,7 +212,7 @@ def search_by_releaseDate(releaseDate, sort_type):
     conn = connect_to_db()
     curs = conn.cursor()
 
-    where_statement = f"WHERE to_char(movie.releaseDate, 'DD/MM/YYYY') LIKE '%{releaseDate}%''"
+    where_statement = f"WHERE to_char(movie.release_date, 'DD/MM/YYYY') LIKE '%{releaseDate}%'"
     search_query = get_full_search_query(where_statement, sort_type)
 
     # Execute the SQL to get search results
