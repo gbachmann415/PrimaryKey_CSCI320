@@ -261,3 +261,11 @@ def add_movie_to_collection(username, collection_name, movie_id):
 
     return
 
+
+def get_number_of_collections_for_user(username):
+    """
+    Gets the total number of collections for a user
+    :param username: the username of the user
+    :return: an integer value for number of collections
+    """
+    return 1

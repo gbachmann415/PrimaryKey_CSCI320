@@ -61,7 +61,7 @@ class Movie(GridLayout):
     minute = f'0{self.movie.get("runtimeMin")}' if self.movie.get(
       "runtimeMin") < 10 else f'{self.movie.get("runtimeMin")}'
     last_watched = "N/A" if self.movie.get("lastWatched") is None else self.movie.get("lastWatched")
-    rating = "N/A" if self.movie.get("rating") is None else self.movie.get("rating")
+    rating = "N/A" if self.movie.get("rating") is None else round(self.movie.get("rating"), 2)
     self.remove_widget(self.children[-1])
     self.add_widget(Label(text=
                           f'Title: {self.movie.get("title")}\n' +

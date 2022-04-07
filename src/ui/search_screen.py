@@ -67,7 +67,7 @@ class SearchScreen(GridLayout):
     Completes the search based on the type and navigates the user to the results page
     :param button: the button selected
     """
-    if self.search_type is None or self.sort_by is None:
+    if self.search_type == "Select Search Type" or self.sort_by == "Select Sort Type":
       return
 
     movie_list = []

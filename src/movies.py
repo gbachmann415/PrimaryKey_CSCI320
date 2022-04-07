@@ -79,7 +79,7 @@ def get_movie(movie_id, username):
                        mpaa_rating,
                        runtime / 60 AS hours,
                        runtime % 60 AS minutes,
-                       release_date
+                       to_char(movie.release_date, 'MM-dd-yyyy')
                 FROM p320_21.movie
                 WHERE movie.movie_id = {};""".format(movie_id)
 
@@ -189,7 +189,7 @@ def search_by_name(movie_name, sort_type):
     for record in records:
         result_list.append(dict(zip(
             ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating',
-             'rating']
+             'rating', 'releaseDate']
             , record)))
 
     # Close the Database Cursor and Connection
@@ -199,10 +199,10 @@ def search_by_name(movie_name, sort_type):
     return result_list
 
 
-def search_by_release_date(release_date, sort_type):
+def search_by_releaseDate(releaseDate, sort_type):
     """
   Searches for a movie by release data
-  :param release_date: the release data to search for
+  :param releaseDate: the release data to search for
   :param sort_type: the sort type for the search
   :return: A list of movies that have release dates matching the search date
   """
@@ -210,7 +210,7 @@ def search_by_release_date(release_date, sort_type):
     conn = connect_to_db()
     curs = conn.cursor()
 
-    where_statement = f"WHERE to_char(movie.release_date, 'DD/MM/YYYY') LIKE '%{release_date}%''"
+    where_statement = f"WHERE to_char(movie.releaseDate, 'DD/MM/YYYY') LIKE '%{releaseDate}%''"
     search_query = get_full_search_query(where_statement, sort_type)
 
     # Execute the SQL to get search results
@@ -222,7 +222,7 @@ def search_by_release_date(release_date, sort_type):
     for record in records:
         result_list.append(dict(zip(
             ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating',
-             'rating']
+             'rating', 'releaseDate']
             , record)))
 
     # Close the Database Cursor and Connection
@@ -255,7 +255,7 @@ def search_by_cast(cast_member, sort_type):
     for record in records:
         result_list.append(dict(zip(
             ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating',
-             'rating']
+             'rating', 'releaseDate']
             , record)))
 
     # Close the Database Cursor and Connection
@@ -288,7 +288,7 @@ def search_by_studio(studio_name, sort_type):
     for record in records:
         result_list.append(dict(zip(
             ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating',
-             'rating']
+             'rating', 'releaseDate']
             , record)))
 
     # Close the Database Cursor and Connection
@@ -316,11 +316,12 @@ def search_by_genre(genre_name, sort_type):
     records = curs.fetchall()
 
     # Save query result into a list (list of dict objects)
+    # Save query result into a list (list of dict objects)
     result_list = []
     for record in records:
         result_list.append(dict(zip(
             ['movie_id', 'title', 'director', 'runtimeHr', 'runtimeMin', 'studio', 'cast_members', 'mpaa_rating',
-             'rating']
+             'rating', 'releaseDate']
             , record)))
 
     # Close the Database Cursor and Connection
@@ -330,6 +331,48 @@ def search_by_genre(genre_name, sort_type):
     return result_list
 
 
+def top_ten_movies_for_user(username, sort_type):
+    """
+    Returns a list of the top ten movies for the user based on the given sort
+    :param username: the username of the user to get the top 10 movies for
+    :param sort_type: the type of top 10 list to get
+    :return: a list of movies
+    """
+    print(sort_type)
+    return [
+        {
+            'movie_id': 1,
+            'title': 'title 1',
+            'mpaa_rating': 'PG-13',
+            'runtimeHr': 1,
+            'runtimeMin': 40,
+            'releaseDate': '2020-04-05',
+            'rating': 4.0,
+            'lastWatched': '2020-03-19'
+        },
+        {
+            'movie_id': 2,
+            'title': 'title 2',
+            'mpaa_rating': 'R',
+            'runtimeHr': 4,
+            'runtimeMin': 40,
+            'releaseDate': '2020-04-05',
+            'rating': 3.2,
+            'lastWatched': '2020-03-19'
+        },
+        {
+            'movie_id': 3,
+            'title': 'title 3',
+            'mpaa_rating': 'R',
+            'runtimeHr': 1,
+            'runtimeMin': 42,
+            'releaseDate': '2020-04-29',
+            'rating': 4.2191,
+            'lastWatched': '2020-03-19'
+        }
+    ]
+
+
 def get_sort_type_query_from_name(sort_name):
     """
   Gets the ORDER BY statement for the query
@@ -337,7 +380,7 @@ def get_sort_type_query_from_name(sort_name):
   :return: string of order by query
   """
     if sort_name == 'Default':
-        return "ORDER BY movie.title, extract(YEAR from movie.release_date)"
+        return "ORDER BY movie.title, extract(YEAR from movie.releaseDate)"
     elif sort_name == 'Movie Name':
         return "ORDER BY movie.title"
     elif sort_name == 'Studio':
@@ -345,7 +388,7 @@ def get_sort_type_query_from_name(sort_name):
     elif sort_name == 'Genre':
         return "ORDER BY genre.genres"
     elif sort_name == 'Released Year':
-        return "ORDER BY extract(YEAR from movie.release_date)"
+        return "ORDER BY extract(YEAR from movie.releaseDate)"
     else:
         return
 
@@ -368,7 +411,8 @@ def get_full_search_query(where_clause, sort_name):
            s.studios as studios,
            actors.actors_list as actors,
            movie.mpaa_rating,
-           avg(watched.star_rating) as rating
+           avg(watched.star_rating) as rating,
+           to_char(movie.release_date, 'MM-dd-yyyy') as releaseDate
       from p320_21.movie
       left join p320_21.watched watched on movie.movie_id = watched.movie_id
       left join p320_21.person p on p.id = movie.director_id

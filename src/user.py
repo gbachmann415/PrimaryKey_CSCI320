@@ -268,3 +268,21 @@ def search_user(user_email):
     conn.close()
 
     return result_list
+
+
+def get_following_count_for_user(username):
+    """
+    Gets the number of following users for a user
+    :param username: the username to get the following count for
+    :return: the integer value of the number of following users
+    """
+    return 1
+
+
+def get_follower_count_for_user(username):
+    """
+    Gets the number of followers for a user
+    :param username: the username to get the follower count for
+    :return: the integer value of the number of followers
+    """
+    return 1
