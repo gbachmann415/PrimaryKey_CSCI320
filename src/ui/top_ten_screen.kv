@@ -1,0 +1,14 @@
+<TopTenScreen>
+    rows: 4
+    cols: 1
+
+    size_hint_y: None
+    height: '32dp'
+    Label:
+        size_hint_y: None
+        height: '32dp'
+    Button:
+        text: 'Search'
+        size_hint_y: None
+        height: '32dp'
+        on_press: root.show_results(self)

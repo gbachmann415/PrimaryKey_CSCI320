@@ -5,7 +5,8 @@ from src.ui import \
   account_screen, collections_screen, \
   collection, movie, \
   search_screen, movies_screen, \
-  following_screen, search_users_screen
+  following_screen, search_users_screen, \
+  top_ten_screen
 
 
 class Display(GridLayout):
@@ -20,7 +21,7 @@ class Display(GridLayout):
     self.add_widget(self.child)
     self.username = None
 
-  def update_child(self, child_name, username=None, collection_id=None, movie_id=None, movie_list=None):
+  def update_child(self, child_name, username=None, collection_id=None, movie_id=None, movie_list=None, simple_display=False):
     """
     Updates the currently viewed page/screen
     :param child_name: the name of the child to switch to
@@ -58,7 +59,7 @@ class Display(GridLayout):
 
     if child_name == 'MoviesScreen':
       child = movies_screen.MoviesScreen()
-      child.initialize_widget(self.username, movie_list)
+      child.initialize_widget(self.username, movie_list, simple_display)
 
     if child_name == 'FollowingScreen':
       child = following_screen.FollowingScreen()
@@ -66,6 +67,10 @@ class Display(GridLayout):
 
     if child_name == 'SearchUsersScreen':
       child = search_users_screen.SearchUsersScreen()
+      child.initialize_widget(self.username)
+
+    if child_name == 'TopTen':
+      child = top_ten_screen.TopTenScreen()
       child.initialize_widget(self.username)
 
     self.clear_widgets()

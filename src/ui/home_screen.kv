@@ -1,5 +1,5 @@
 <HomeScreen>:
-    rows: 3
+    rows: 4
     cols: 1
     BoxLayout:
         size_hint_y: None
@@ -13,6 +13,12 @@
         Button:
             text: 'Search Movies'
             on_press: root.search_movies(self)
+        Button:
+            text: 'View Top 10 Movies'
+            on_press: root.go_to_top_ten_movies(self)
+        Button:
+            text: 'Recommended Movies'
+            on_press: root.go_to_recommended_movies(self)
     Label:
         size_hint_y: None
         height: '32dp'
