@@ -85,3 +85,16 @@ LIMIT 20;
 -- For you: Recommend movies to watch based on your play history (e.g. genre, cast member,
 --          rating) and the play history of similar users.
 ----
+
+---------------------------------------------------------------
+-- MISC
+---------------------------------------------------------------
+
+CREATE INDEX collection_username_index ON p320_21.collection (username);
+CREATE INDEX genre_name_index ON p320_21.genre (name);
+CREATE INDEX movie_title_index ON p320_21.movie (title);
+CREATE INDEX movie_release_date_index ON p320_21.movie (release_date);
+CREATE INDEX person_name_id_index ON p320_21.person (name_id);
+CREATE INDEX studio_name_index ON p320_21.studio (name);
+CREATE INDEX user_email_index ON p320_21."user" (email);
+CREATE INDEX watched_star_rating_index ON p320_21.watched (star_rating);
