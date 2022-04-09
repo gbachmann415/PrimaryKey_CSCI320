@@ -301,11 +301,11 @@ def search_by_studio(studio_name, sort_type):
 
 def search_by_genre(genre_name, sort_type):
     """
-  Searches for a movie by genre
-  :param genre_name: the name of the genre to search for
-  :param sort_type: the sort type for the search
-  :return: A list of movies that have genre matching the search genre
-  """
+    Searches for a movie by genre
+    :param genre_name: the name of the genre to search for
+    :param sort_type: the sort type for the search
+    :return: A list of movies that have genre matching the search genre
+    """
     # Establish Database Connection
     conn = connect_to_db()
     curs = conn.cursor()
@@ -375,12 +375,170 @@ def top_ten_movies_for_user(username, sort_type):
     ]
 
 
+def top_20_last_90_days():
+    """
+    Gets the top 20 watched movies for the past 90 days
+    :return: a list of movies with the user watched/rated info
+    """
+    return [
+        {
+            'movie_id': 1,
+            'title': 'title 1',
+            'mpaa_rating': 'PG-13',
+            'runtimeHr': 1,
+            'runtimeMin': 40,
+            'releaseDate': '2020-04-05',
+            'rating': 4.0,
+            'lastWatched': '2020-03-19'
+        },
+        {
+            'movie_id': 2,
+            'title': 'title 2',
+            'mpaa_rating': 'R',
+            'runtimeHr': 4,
+            'runtimeMin': 40,
+            'releaseDate': '2020-04-05',
+            'rating': 3.2,
+            'lastWatched': '2020-03-19'
+        },
+        {
+            'movie_id': 3,
+            'title': 'title 3',
+            'mpaa_rating': 'R',
+            'runtimeHr': 1,
+            'runtimeMin': 42,
+            'releaseDate': '2020-04-29',
+            'rating': 4.2191,
+            'lastWatched': '2020-03-19'
+        }
+    ]
+
+
+def top_20_among_friends(username):
+    """
+    Gets the top 20 watched movies among the user's friends
+    :param username: the username of the user
+    :return: a list of movies with the user watched/rated info
+    """
+    return [
+        {
+            'movie_id': 1,
+            'title': 'title 1',
+            'mpaa_rating': 'PG-13',
+            'runtimeHr': 1,
+            'runtimeMin': 40,
+            'releaseDate': '2020-04-05',
+            'rating': 4.0,
+            'lastWatched': '2020-03-19'
+        },
+        {
+            'movie_id': 2,
+            'title': 'title 2',
+            'mpaa_rating': 'R',
+            'runtimeHr': 4,
+            'runtimeMin': 40,
+            'releaseDate': '2020-04-05',
+            'rating': 3.2,
+            'lastWatched': '2020-03-19'
+        },
+        {
+            'movie_id': 3,
+            'title': 'title 3',
+            'mpaa_rating': 'R',
+            'runtimeHr': 1,
+            'runtimeMin': 42,
+            'releaseDate': '2020-04-29',
+            'rating': 4.2191,
+            'lastWatched': '2020-03-19'
+        }
+    ]
+
+
+def top_5_new_releases():
+    """
+    Gets the top 5 watched new releases for the month
+    :return: a list of movies with the user watched/rated info
+    """
+    return [
+        {
+            'movie_id': 1,
+            'title': 'title 1',
+            'mpaa_rating': 'PG-13',
+            'runtimeHr': 1,
+            'runtimeMin': 40,
+            'releaseDate': '2020-04-05',
+            'rating': 4.0,
+            'lastWatched': '2020-03-19'
+        },
+        {
+            'movie_id': 2,
+            'title': 'title 2',
+            'mpaa_rating': 'R',
+            'runtimeHr': 4,
+            'runtimeMin': 40,
+            'releaseDate': '2020-04-05',
+            'rating': 3.2,
+            'lastWatched': '2020-03-19'
+        },
+        {
+            'movie_id': 3,
+            'title': 'title 3',
+            'mpaa_rating': 'R',
+            'runtimeHr': 1,
+            'runtimeMin': 42,
+            'releaseDate': '2020-04-29',
+            'rating': 4.2191,
+            'lastWatched': '2020-03-19'
+        }
+    ]
+
+
+def recommend_for_user(username):
+    """
+    Gets the movie recommendations for the user
+    :param username: the username of the user
+    :return: a list of movies with the user watched/rated info
+    """
+    return [
+        {
+            'movie_id': 1,
+            'title': 'title 1',
+            'mpaa_rating': 'PG-13',
+            'runtimeHr': 1,
+            'runtimeMin': 40,
+            'releaseDate': '2020-04-05',
+            'rating': 4.0,
+            'lastWatched': '2020-03-19'
+        },
+        {
+            'movie_id': 2,
+            'title': 'title 2',
+            'mpaa_rating': 'R',
+            'runtimeHr': 4,
+            'runtimeMin': 40,
+            'releaseDate': '2020-04-05',
+            'rating': 3.2,
+            'lastWatched': '2020-03-19'
+        },
+        {
+            'movie_id': 3,
+            'title': 'title 3',
+            'mpaa_rating': 'R',
+            'runtimeHr': 1,
+            'runtimeMin': 42,
+            'releaseDate': '2020-04-29',
+            'rating': 4.2191,
+            'lastWatched': '2020-03-19'
+        }
+    ]
+
+
 def get_sort_type_query_from_name(sort_name):
     """
-  Gets the ORDER BY statement for the query
-  :param sort_name: The sort name to get the ORDER BY for
-  :return: string of order by query
-  """
+    Gets the ORDER BY statement for the query
+    :param sort_name: The sort name to get the ORDER BY for
+    :return: string of order by query
+    """
     if sort_name == 'Default':
         return "ORDER BY movie.title, extract(YEAR from movie.releaseDate)"
     elif sort_name == 'Movie Name':
@@ -397,11 +555,11 @@ def get_sort_type_query_from_name(sort_name):
 
 def get_full_search_query(where_clause, sort_name):
     """
-  Gets the entire query for the search given the where clause and the sort type
-  :param where_clause: The where clause for the query
-  :param sort_name: The sort type name for the query
-  :return: a string of the query
-  """
+    Gets the entire query for the search given the where clause and the sort type
+    :param where_clause: The where clause for the query
+    :param sort_name: The sort type name for the query
+    :return: a string of the query
+    """
     sort_statement = get_sort_type_query_from_name(sort_name)
     return f"""
       select

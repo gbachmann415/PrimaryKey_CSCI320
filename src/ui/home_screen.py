@@ -63,4 +63,4 @@ class HomeScreen(GridLayout):
     Goes to the recommended movies page
     :param button: the button selected
     """
-    self.parent.update_child('RecommendedMovies', self.username)
+    self.parent.update_child('MovieRecommendations', self.username)

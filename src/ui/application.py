@@ -20,4 +20,5 @@ class MovieApplication(App):
     Builder.load_file('ui/following_screen.kv')
     Builder.load_file('ui/search_users_screen.kv')
     Builder.load_file('ui/top_ten_screen.kv')
+    Builder.load_file('ui/movie_recommendations.kv')
     return display.Display()

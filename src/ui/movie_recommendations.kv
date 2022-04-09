@@ -1,0 +1,23 @@
+<MovieRecommendations>:
+    rows: 3
+    cols: 1
+
+    GridLayout:
+        rows: 2
+        cols: 2
+
+        Button:
+            text: '20 Most Popular Last 90 Days'
+            on_press: root.most_popular_90_days(self)
+        Button:
+            text: '20 Most Popular Among Friends'
+            on_press: root.most_popular_friends(self)
+        Button:
+            text: '5 New Releases'
+            on_press: root.new_releases(self)
+        Button:
+            text: 'Recommended For You'
+            on_press: root.recommend_for_user(self)
+    Label:
+        size_hint_y: None
+        height: '32dp'

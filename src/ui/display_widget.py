@@ -6,7 +6,7 @@ from src.ui import \
   collection, movie, \
   search_screen, movies_screen, \
   following_screen, search_users_screen, \
-  top_ten_screen
+  top_ten_screen, movie_recommendations
 
 
 class Display(GridLayout):
@@ -71,6 +71,10 @@ class Display(GridLayout):
 
     if child_name == 'TopTen':
       child = top_ten_screen.TopTenScreen()
+      child.initialize_widget(self.username)
+
+    if child_name == 'MovieRecommendations':
+      child = movie_recommendations.MovieRecommendations()
       child.initialize_widget(self.username)
 
     self.clear_widgets()
