@@ -22,6 +22,20 @@ WHERE username = '{}';
 ----
 -- Top 10 movies (by highest rating)
 ----
+SELECT DISTINCT watched.movie_id,
+                title,
+                mpaa_rating,
+                runtime / 60 AS hours,
+                runtime % 60 AS minutes,
+                to_char(release_date, 'yyyy-MM-dd'),
+                star_rating,
+                to_char(MAX(date_watched), 'yyyy-MM-dd')
+FROM p320_21.watched
+LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+WHERE username = '{}' AND star_rating IS NOT NULL
+GROUP BY watched.movie_id, title, mpaa_rating, hours, minutes, release_date, star_rating
+ORDER BY star_rating DESC
+LIMIT 10;
 
 ----
 -- Top 10 movies (most plays)
