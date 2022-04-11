@@ -376,7 +376,21 @@ def top_ten_movies_for_user(username, sort_type):
                             GROUP BY watched.movie_id, title, mpaa_rating, hours, minutes, release_date, star_rating
                             ORDER BY COUNT(watched.movie_id) DESC
                             LIMIT 10;""".format(username)
-    sql_combo = r"""""".format(username) #TODO
+    sql_combo = r"""SELECT DISTINCT watched.movie_id,
+                                    title,
+                                    mpaa_rating,
+                                    runtime / 60 AS hours,
+                                    runtime % 60 AS minutes,
+                                    to_char(release_date, 'yyyy-MM-dd'),
+                                    star_rating,
+                                    to_char(MAX(date_watched), 'yyyy-MM-dd'),
+                                    COUNT(watched.movie_id)
+                    FROM p320_21.watched
+                    LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+                    WHERE username = '{}' AND star_rating IS NOT NULL
+                    GROUP BY watched.movie_id, title, mpaa_rating, hours, minutes, release_date, star_rating
+                    ORDER BY COUNT(watched.movie_id) DESC, star_rating DESC
+                    LIMIT 10;""".format(username)
 
     # Execute the SQL
     if sort_type == 'Highest Rated':
