@@ -376,7 +376,7 @@ def top_ten_movies_for_user(username, sort_type):
                             GROUP BY watched.movie_id, title, mpaa_rating, hours, minutes, release_date, star_rating
                             ORDER BY COUNT(watched.movie_id) DESC
                             LIMIT 10;""".format(username)
-    sql_combo = r"""""".format(username)
+    sql_combo = r"""""".format(username) #TODO
 
     # Execute the SQL
     if sort_type == 'Highest Rated':
@@ -392,7 +392,6 @@ def top_ten_movies_for_user(username, sort_type):
         result_list.append(dict(zip(
             ['movie_id', 'title', 'mpaa_rating', 'runtimeHr', 'runtimeMin', 'releaseDate', 'rating', 'lastWatched']
             , record)))
-    print(result_list)
 
     # Close the Database Cursor and Connection
     curs.close()
