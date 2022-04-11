@@ -341,6 +341,49 @@ def top_ten_movies_for_user(username, sort_type):
     :return: a list of movies
     """
     print(sort_type)
+
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL Statements
+    sql_highest_rated = r"""SELECT DISTINCT watched.movie_id,
+                                            title,
+                                            mpaa_rating,
+                                            runtime / 60 AS hours,
+                                            runtime % 60 AS minutes,
+                                            to_char(release_date, 'yyyy-MM-dd'),
+                                            star_rating,
+                                            to_char(MAX(date_watched), 'yyyy-MM-dd')
+                            FROM p320_21.watched
+                            LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+                            WHERE username = '{}' AND star_rating IS NOT NULL
+                            GROUP BY watched.movie_id, title, mpaa_rating, hours, minutes, release_date, star_rating
+                            ORDER BY star_rating DESC
+                            LIMIT 10;""".format(username)
+    sql_most_watched = r"""""".format(username)
+    sql_combo = r"""""".format(username)
+
+    # Execute the SQL
+    if sort_type == 'Highest Rated':
+        curs.execute(sql_highest_rated)
+    elif sort_type == 'Most Watched':
+        curs.execute(sql_most_watched)
+    elif sort_type == 'Combination':
+        curs.execute(sql_combo)
+
+    records = curs.fetchall()
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(
+            ['movie_id', 'title', 'mpaa_rating', 'runtimeHr', 'runtimeMin', 'releaseDate', 'rating', 'lastWatched']
+            , record)))
+    print(result_list)
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return [
         {
             'movie_id': 1,
@@ -380,6 +423,22 @@ def top_20_last_90_days():
     Gets the top 20 watched movies for the past 90 days
     :return: a list of movies with the user watched/rated info
     """
+
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL Statement
+    sql = r""""""
+
+    # Execute the SQL
+    curs.execute(sql)
+    records = curs.fetchall()
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return [
         {
             'movie_id': 1,
@@ -420,6 +479,22 @@ def top_20_among_friends(username):
     :param username: the username of the user
     :return: a list of movies with the user watched/rated info
     """
+
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL Statement
+    sql = r""""""
+
+    # Execute the SQL
+    curs.execute(sql)
+    records = curs.fetchall()
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return [
         {
             'movie_id': 1,
@@ -459,6 +534,22 @@ def top_5_new_releases():
     Gets the top 5 watched new releases for the month
     :return: a list of movies with the user watched/rated info
     """
+
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL Statement
+    sql = r""""""
+
+    # Execute the SQL
+    curs.execute(sql)
+    records = curs.fetchall()
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return [
         {
             'movie_id': 1,
@@ -499,6 +590,22 @@ def recommend_for_user(username):
     :param username: the username of the user
     :return: a list of movies with the user watched/rated info
     """
+
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL Statement
+    sql = r""""""
+
+    # Execute the SQL
+    curs.execute(sql)
+    records = curs.fetchall()
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return [
         {
             'movie_id': 1,
@@ -594,3 +701,5 @@ def get_full_search_query(where_clause, sort_name):
       group by movie.movie_id, n.first_name, n.last_name, movie.title, s.studios, actors_list, movie.release_date, genre.genres
       {sort_statement};
     """
+
+top_ten_movies_for_user('test1', 'Highest Rated')
