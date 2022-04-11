@@ -36,7 +36,6 @@ class TopTenScreen(GridLayout):
     :param value: the value of the button selected
     """
     setattr(self.sort_type, 'text', f'Sort By: {value}')
-    self.sort_type = value
 
   def show_results(self, button):
     """
@@ -46,6 +45,6 @@ class TopTenScreen(GridLayout):
     if self.sort_type is None:
       return
 
-    movie_list = movies.top_ten_movies_for_user(self.username, self.sort_type)
+    movie_list = movies.top_ten_movies_for_user(self.username, self.sort_type.text.replace('Sort By: ', ''))
 
     self.parent.update_child('MoviesScreen', movie_list=movie_list, simple_display=True)
