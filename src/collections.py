@@ -268,4 +268,21 @@ def get_number_of_collections_for_user(username):
     :param username: the username of the user
     :return: an integer value for number of collections
     """
-    return 1
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL Statement
+    sql = r"""SELECT COUNT(DISTINCT collection_id)
+              FROM p320_21.collection
+              WHERE username = '{}';""".format(username)
+
+    # Execute the SQL
+    curs.execute(sql)
+    result = int(curs.fetchone()[0])
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
+    return result
