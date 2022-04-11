@@ -276,6 +276,21 @@ def get_following_count_for_user(username):
     :param username: the username to get the following count for
     :return: the integer value of the number of following users
     """
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL Statement
+    sql = r""""""
+
+    # Execute the SQL
+    curs.execute(sql)
+    records = curs.fetchall()
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
     return 1
 
 
@@ -285,4 +300,21 @@ def get_follower_count_for_user(username):
     :param username: the username to get the follower count for
     :return: the integer value of the number of followers
     """
-    return 1
+    # Establish Database Connection
+    conn = connect_to_db()
+    curs = conn.cursor()
+
+    # SQL Statement
+    sql = r"""SELECT COUNT(DISTINCT username)
+              FROM p320_21.following
+              WHERE following_username = '{}';""".format(username)
+
+    # Execute the SQL
+    curs.execute(sql)
+    result = int(curs.fetchone()[0])
+
+    # Close the Database Cursor and Connection
+    curs.close()
+    conn.close()
+
+    return result
