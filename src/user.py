@@ -281,17 +281,19 @@ def get_following_count_for_user(username):
     curs = conn.cursor()
 
     # SQL Statement
-    sql = r""""""
+    sql = r"""SELECT COUNT(DISTINCT following_username)
+              FROM p320_21.following
+              WHERE username = '{}';""".format(username)
 
     # Execute the SQL
     curs.execute(sql)
-    records = curs.fetchall()
+    result = int(curs.fetchone()[0])
 
     # Close the Database Cursor and Connection
     curs.close()
     conn.close()
 
-    return 1
+    return result
 
 
 def get_follower_count_for_user(username):
