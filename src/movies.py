@@ -424,48 +424,39 @@ def top_20_last_90_days():
     curs = conn.cursor()
 
     # SQL Statement
-    sql = r""""""
+    sql = r"""SELECT watched.movie_id,
+       title,
+       mpaa_rating,
+       runtime / 60 AS hours,
+       runtime % 60 AS minutes,
+       to_char(release_date, 'yyyy-MM-dd'),
+       avg(star_rating),
+       to_char(MAX(date_watched), 'yyyy-MM-dd'),
+       COUNT(watched.movie_id)
+FROM p320_21.watched
+LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+WHERE date_watched > current_date - interval '90' day
+GROUP BY watched.movie_id, title, mpaa_rating, hours, minutes, release_date
+ORDER BY COUNT(watched.movie_id) DESC
+LIMIT 20;"""
 
     # Execute the SQL
     curs.execute(sql)
+
     records = curs.fetchall()
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(
+            ['movie_id', 'title', 'mpaa_rating', 'runtimeHr', 'runtimeMin', 'releaseDate', 'rating', 'lastWatched']
+            , record)))
+    for i in range(0, len(result_list)):
+        result_list[i]['rating'] = round(result_list[i]['rating'], 2)
 
     # Close the Database Cursor and Connection
     curs.close()
     conn.close()
 
-    return [
-        {
-            'movie_id': 1,
-            'title': 'title 1',
-            'mpaa_rating': 'PG-13',
-            'runtimeHr': 1,
-            'runtimeMin': 40,
-            'releaseDate': '2020-04-05',
-            'rating': 4.0,
-            'lastWatched': '2020-03-19'
-        },
-        {
-            'movie_id': 2,
-            'title': 'title 2',
-            'mpaa_rating': 'R',
-            'runtimeHr': 4,
-            'runtimeMin': 40,
-            'releaseDate': '2020-04-05',
-            'rating': 3.2,
-            'lastWatched': '2020-03-19'
-        },
-        {
-            'movie_id': 3,
-            'title': 'title 3',
-            'mpaa_rating': 'R',
-            'runtimeHr': 1,
-            'runtimeMin': 42,
-            'releaseDate': '2020-04-29',
-            'rating': 4.2191,
-            'lastWatched': '2020-03-19'
-        }
-    ]
+    return result_list
 
 
 def top_20_among_friends(username):
@@ -697,4 +688,4 @@ def get_full_search_query(where_clause, sort_name):
       {sort_statement};
     """
 
-top_ten_movies_for_user('test1', 'Most Watched')
+top_20_last_90_days()
