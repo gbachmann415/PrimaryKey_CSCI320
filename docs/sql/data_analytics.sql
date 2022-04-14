@@ -26,7 +26,7 @@ where collection_id is not null
 group by g.name;
 
 --average rating of top 10 actor (that have been in the most movies)'s movie
-select person_id, (select ROUND(cast(avg(w.star_rating) as numeric), 2)
+select concat(n.first_name, ' ', n.last_name), (select ROUND(cast(avg(w.star_rating) as numeric), 2)
                    from p320_21.movie
                             left join p320_21.watched as w
                                       on movie.movie_id = w.movie_id
@@ -36,7 +36,9 @@ select person_id, (select ROUND(cast(avg(w.star_rating) as numeric), 2)
                    group by person_id
 ) as star_avg
 from p320_21.acts_in
-         left join p320_21.movie m on m.movie_id = acts_in.movie_id
-group by person_id
+left join p320_21.movie m on m.movie_id = acts_in.movie_id
+left join p320_21.person p on acts_in.person_id = p.id
+left join p320_21.name n on p.name_id = n.id
+group by person_id, n.first_name, n.last_name
 order by count(person_id) desc
 limit 10;
