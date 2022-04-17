@@ -471,7 +471,22 @@ def top_20_among_friends(username):
     curs = conn.cursor()
 
     # SQL Statement
-    sql = r""""""
+    sql = r"""SELECT DISTINCT watched.movie_id,
+                                title,
+                                mpaa_rating,
+                                runtime / 60 AS hours,
+                                runtime % 60 AS minutes,
+                                to_char(release_date, 'yyyy-MM-dd'),
+                                avg(star_rating),
+                                to_char(MAX(date_watched), 'yyyy-MM-dd'),
+                                COUNT(watched.movie_id)
+                FROM p320_21.following
+                LEFT JOIN p320_21.watched ON following.following_username = watched.username
+                LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+                WHERE following.username = '{}'
+                GROUP BY watched.movie_id, title, mpaa_rating, hours, minutes, release_date, star_rating
+                ORDER BY COUNT(watched.movie_id) DESC
+                LIMIT 20;""".format(username)
 
     # Execute the SQL
     curs.execute(sql)
@@ -488,38 +503,7 @@ def top_20_among_friends(username):
     curs.close()
     conn.close()
 
-    return [
-        {
-            'movie_id': 1,
-            'title': 'title 1',
-            'mpaa_rating': 'PG-13',
-            'runtimeHr': 1,
-            'runtimeMin': 40,
-            'releaseDate': '2020-04-05',
-            'rating': 4.0,
-            'lastWatched': '2020-03-19'
-        },
-        {
-            'movie_id': 2,
-            'title': 'title 2',
-            'mpaa_rating': 'R',
-            'runtimeHr': 4,
-            'runtimeMin': 40,
-            'releaseDate': '2020-04-05',
-            'rating': 3.2,
-            'lastWatched': '2020-03-19'
-        },
-        {
-            'movie_id': 3,
-            'title': 'title 3',
-            'mpaa_rating': 'R',
-            'runtimeHr': 1,
-            'runtimeMin': 42,
-            'releaseDate': '2020-04-29',
-            'rating': 4.2191,
-            'lastWatched': '2020-03-19'
-        }
-    ]
+    return result_list
 
 
 def top_5_new_releases():
