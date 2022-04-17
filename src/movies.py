@@ -476,6 +476,13 @@ def top_20_among_friends(username):
     # Execute the SQL
     curs.execute(sql)
     records = curs.fetchall()
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(
+            ['movie_id', 'title', 'mpaa_rating', 'runtimeHr', 'runtimeMin', 'releaseDate', 'rating', 'lastWatched']
+            , record)))
+    for i in range(0, len(result_list)):
+        result_list[i]['rating'] = round(result_list[i]['rating'], 2)
 
     # Close the Database Cursor and Connection
     curs.close()
@@ -531,6 +538,13 @@ def top_5_new_releases():
     # Execute the SQL
     curs.execute(sql)
     records = curs.fetchall()
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(
+            ['movie_id', 'title', 'mpaa_rating', 'runtimeHr', 'runtimeMin', 'releaseDate', 'rating', 'lastWatched']
+            , record)))
+    for i in range(0, len(result_list)):
+        result_list[i]['rating'] = round(result_list[i]['rating'], 2)
 
     # Close the Database Cursor and Connection
     curs.close()
@@ -587,6 +601,13 @@ def recommend_for_user(username):
     # Execute the SQL
     curs.execute(sql)
     records = curs.fetchall()
+    result_list = []
+    for record in records:
+        result_list.append(dict(zip(
+            ['movie_id', 'title', 'mpaa_rating', 'runtimeHr', 'runtimeMin', 'releaseDate', 'rating', 'lastWatched']
+            , record)))
+    for i in range(0, len(result_list)):
+        result_list[i]['rating'] = round(result_list[i]['rating'], 2)
 
     # Close the Database Cursor and Connection
     curs.close()
@@ -688,4 +709,3 @@ def get_full_search_query(where_clause, sort_name):
       {sort_statement};
     """
 
-top_20_last_90_days()
