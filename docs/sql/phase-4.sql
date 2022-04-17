@@ -139,7 +139,44 @@ LIMIT 5;
 -- For you: Recommend movies to watch based on your play history (e.g. genre, cast member,
 --          rating) and the play history of similar users.
 ----
+WITH user_genre AS (SELECT genre_id FROM p320_21.user_top_genre WHERE username = 'test1')
+SELECT DISTINCT movie.movie_id,
+       title,
+       mpaa_rating,
+       runtime / 60 AS hours,
+       runtime % 60 AS minutes,
+       to_char(release_date, 'yyyy-MM-dd'),
+       avg(star_rating),
+       to_char(MAX(date_watched), 'yyyy-MM-dd'),
+       COUNT(watched.movie_id)
+FROM user_genre
+LEFT JOIN p320_21.movie_genre ON user_genre.genre_id = movie_genre.genre_id
+LEFT JOIN p320_21.movie ON movie_genre.movie_id = movie.movie_id
+LEFT JOIN p320_21.watched ON movie.movie_id = watched.movie_id
+WHERE movie_genre.genre_id = user_genre.genre_id and star_rating is not null
+GROUP BY movie.movie_id, title, mpaa_rating, runtime / 60, runtime % 60, to_char(release_date, 'yyyy-MM-dd')
+ORDER BY COUNT(watched.movie_id) DESC;
 
+
+WITH user_genre AS (SELECT genre_id FROM p320_21.user_top_genre WHERE username IN (SELECT following_username
+FROM p320_21.following
+WHERE username = 'test1'))
+SELECT DISTINCT movie.movie_id,
+       title,
+       mpaa_rating,
+       runtime / 60 AS hours,
+       runtime % 60 AS minutes,
+       to_char(release_date, 'yyyy-MM-dd'),
+       avg(star_rating),
+       to_char(MAX(date_watched), 'yyyy-MM-dd'),
+       COUNT(watched.movie_id)
+FROM user_genre
+LEFT JOIN p320_21.movie_genre ON user_genre.genre_id = movie_genre.genre_id
+LEFT JOIN p320_21.movie ON movie_genre.movie_id = movie.movie_id
+LEFT JOIN p320_21.watched ON movie.movie_id = watched.movie_id
+WHERE movie_genre.genre_id = user_genre.genre_id and star_rating is not null
+GROUP BY movie.movie_id, title, mpaa_rating, runtime / 60, runtime % 60, to_char(release_date, 'yyyy-MM-dd')
+ORDER BY COUNT(watched.movie_id) DESC;
 ---------------------------------------------------------------
 -- MISC
 ---------------------------------------------------------------
