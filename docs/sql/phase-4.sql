@@ -152,3 +152,16 @@ CREATE INDEX person_name_id_index ON p320_21.person (name_id);
 CREATE INDEX studio_name_index ON p320_21.studio (name);
 CREATE INDEX user_email_index ON p320_21."user" (email);
 CREATE INDEX watched_star_rating_index ON p320_21.watched (star_rating);
+
+CREATE VIEW p320_21.user_top_genre AS
+with genre_rank as(
+SELECT username,
+       name as Genre,
+       count(name) as count,
+       row_number() over (partition by username order by count(name) desc) as row_num
+FROM p320_21.watched
+LEFT JOIN p320_21.movie_genre ON watched.movie_id = movie_genre.movie_id
+LEFT JOIN p320_21.genre ON movie_genre.genre_id = genre.genre_id
+group by username, name
+order by count desc)
+select username, Genre FROM genre_rank where row_num = 1;
