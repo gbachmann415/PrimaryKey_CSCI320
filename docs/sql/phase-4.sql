@@ -103,6 +103,21 @@ LIMIT 20;
 ----
 -- Top 5 new releases of the month
 ----
+SELECT watched.movie_id,
+       title,
+       mpaa_rating,
+       runtime / 60 AS hours,
+       runtime % 60 AS minutes,
+       to_char(release_date, 'yyyy-MM-dd'),
+       star_rating,
+       date_watched
+FROM p320_21.watched
+LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+WHERE release_date > current_date - interval '1' month
+GROUP BY watched.movie_id, title, mpaa_rating, runtime / 60, runtime % 60,
+         to_char(release_date, 'yyyy-MM-dd'), star_rating, date_watched
+ORDER BY COUNT(watched.movie_id) DESC, star_rating DESC
+LIMIT 5;
 
 ----
 -- For you: Recommend movies to watch based on your play history (e.g. genre, cast member,

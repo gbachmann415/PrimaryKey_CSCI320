@@ -533,7 +533,21 @@ def top_5_new_releases():
     curs = conn.cursor()
 
     # SQL Statement
-    sql = r""""""
+    sql = r"""SELECT watched.movie_id,
+                   title,
+                   mpaa_rating,
+                   runtime / 60 AS hours,
+                   runtime % 60 AS minutes,
+                   to_char(release_date, 'yyyy-MM-dd'),
+                   star_rating,
+                   date_watched
+            FROM p320_21.watched
+            LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+            WHERE release_date > current_date - interval '1' month
+            GROUP BY watched.movie_id, title, mpaa_rating, runtime / 60, runtime % 60,
+                     to_char(release_date, 'yyyy-MM-dd'), star_rating, date_watched
+            ORDER BY COUNT(watched.movie_id) DESC, star_rating DESC
+            LIMIT 5;"""
 
     # Execute the SQL
     curs.execute(sql)
@@ -550,38 +564,7 @@ def top_5_new_releases():
     curs.close()
     conn.close()
 
-    return [
-        {
-            'movie_id': 1,
-            'title': 'title 1',
-            'mpaa_rating': 'PG-13',
-            'runtimeHr': 1,
-            'runtimeMin': 40,
-            'releaseDate': '2020-04-05',
-            'rating': 4.0,
-            'lastWatched': '2020-03-19'
-        },
-        {
-            'movie_id': 2,
-            'title': 'title 2',
-            'mpaa_rating': 'R',
-            'runtimeHr': 4,
-            'runtimeMin': 40,
-            'releaseDate': '2020-04-05',
-            'rating': 3.2,
-            'lastWatched': '2020-03-19'
-        },
-        {
-            'movie_id': 3,
-            'title': 'title 3',
-            'mpaa_rating': 'R',
-            'runtimeHr': 1,
-            'runtimeMin': 42,
-            'releaseDate': '2020-04-29',
-            'rating': 4.2191,
-            'lastWatched': '2020-03-19'
-        }
-    ]
+    return result_list
 
 
 def recommend_for_user(username):
