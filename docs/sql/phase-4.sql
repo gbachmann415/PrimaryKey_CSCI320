@@ -99,6 +99,22 @@ LIMIT 20;
 ----
 -- Top 20 most popular movies among my friends
 ----
+SELECT DISTINCT watched.movie_id,
+                title,
+                mpaa_rating,
+                runtime / 60 AS hours,
+                runtime % 60 AS minutes,
+                to_char(release_date, 'yyyy-MM-dd'),
+                avg(star_rating),
+                to_char(MAX(date_watched), 'yyyy-MM-dd'),
+                COUNT(watched.movie_id)
+FROM p320_21.following
+LEFT JOIN p320_21.watched ON following.following_username = watched.username
+LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+WHERE following.username = '{}'
+GROUP BY watched.movie_id, title, mpaa_rating, hours, minutes, release_date, star_rating
+ORDER BY COUNT(watched.movie_id) DESC
+LIMIT 20;
 
 ----
 -- Top 5 new releases of the month
