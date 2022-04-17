@@ -539,13 +539,13 @@ def top_5_new_releases():
                    runtime / 60 AS hours,
                    runtime % 60 AS minutes,
                    to_char(release_date, 'yyyy-MM-dd'),
-                   star_rating,
-                   date_watched
+                   avg(star_rating),
+                   to_char(MAX(date_watched), 'yyyy-MM-dd')
             FROM p320_21.watched
             LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
             WHERE release_date > current_date - interval '1' month
             GROUP BY watched.movie_id, title, mpaa_rating, runtime / 60, runtime % 60,
-                     to_char(release_date, 'yyyy-MM-dd'), star_rating, date_watched
+                     to_char(release_date, 'yyyy-MM-dd'), star_rating
             ORDER BY COUNT(watched.movie_id) DESC, star_rating DESC
             LIMIT 5;"""
 
