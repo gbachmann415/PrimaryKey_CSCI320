@@ -563,7 +563,27 @@ def recommend_for_user(username):
     curs = conn.cursor()
 
     # SQL Statement
-    sql = r""""""
+    sql = r"""WITH user_genre AS (SELECT username, genre_id FROM p320_21.user_top_genre WHERE username = '{username}' OR
+username IN (SELECT following_username
+FROM p320_21.following
+WHERE username = '{username}'))
+SELECT DISTINCT movie.movie_id,
+       title,
+       mpaa_rating,
+       runtime / 60 AS hours,
+       runtime % 60 AS minutes,
+       to_char(release_date, 'yyyy-MM-dd'),
+       avg(star_rating),
+       to_char(MAX(date_watched), 'yyyy-MM-dd'),
+       COUNT(watched.movie_id)
+FROM user_genre
+LEFT JOIN p320_21.movie_genre ON user_genre.genre_id = movie_genre.genre_id
+LEFT JOIN p320_21.movie ON movie_genre.movie_id = movie.movie_id
+LEFT JOIN p320_21.watched ON movie.movie_id = watched.movie_id
+WHERE movie_genre.genre_id = user_genre.genre_id and star_rating is not null
+GROUP BY movie.movie_id, title, mpaa_rating, runtime / 60, runtime % 60, to_char(release_date, 'yyyy-MM-dd')
+ORDER BY COUNT(watched.movie_id) DESC
+LIMIT 20;""".format(username=username)
 
     # Execute the SQL
     curs.execute(sql)
@@ -580,38 +600,7 @@ def recommend_for_user(username):
     curs.close()
     conn.close()
 
-    return [
-        {
-            'movie_id': 1,
-            'title': 'title 1',
-            'mpaa_rating': 'PG-13',
-            'runtimeHr': 1,
-            'runtimeMin': 40,
-            'releaseDate': '2020-04-05',
-            'rating': 4.0,
-            'lastWatched': '2020-03-19'
-        },
-        {
-            'movie_id': 2,
-            'title': 'title 2',
-            'mpaa_rating': 'R',
-            'runtimeHr': 4,
-            'runtimeMin': 40,
-            'releaseDate': '2020-04-05',
-            'rating': 3.2,
-            'lastWatched': '2020-03-19'
-        },
-        {
-            'movie_id': 3,
-            'title': 'title 3',
-            'mpaa_rating': 'R',
-            'runtimeHr': 1,
-            'runtimeMin': 42,
-            'releaseDate': '2020-04-29',
-            'rating': 4.2191,
-            'lastWatched': '2020-03-19'
-        }
-    ]
+    return result_list
 
 
 def get_sort_type_query_from_name(sort_name):
@@ -676,3 +665,26 @@ def get_full_search_query(where_clause, sort_name):
       {sort_statement};
     """
 
+username = 'test'
+sql = r"""WITH user_genre AS (SELECT username, genre_id FROM p320_21.user_top_genre WHERE username = '{username}' OR
+username IN (SELECT following_username
+FROM p320_21.following
+WHERE username = '{username}'))
+SELECT DISTINCT movie.movie_id,
+       title,
+       mpaa_rating,
+       runtime / 60 AS hours,
+       runtime % 60 AS minutes,
+       to_char(release_date, 'yyyy-MM-dd'),
+       avg(star_rating),
+       to_char(MAX(date_watched), 'yyyy-MM-dd'),
+       COUNT(watched.movie_id)
+FROM user_genre
+LEFT JOIN p320_21.movie_genre ON user_genre.genre_id = movie_genre.genre_id
+LEFT JOIN p320_21.movie ON movie_genre.movie_id = movie.movie_id
+LEFT JOIN p320_21.watched ON movie.movie_id = watched.movie_id
+WHERE movie_genre.genre_id = user_genre.genre_id and star_rating is not null
+GROUP BY movie.movie_id, title, mpaa_rating, runtime / 60, runtime % 60, to_char(release_date, 'yyyy-MM-dd')
+ORDER BY COUNT(watched.movie_id) DESC
+LIMIT 20;""".format(username=username)
+print(sql)
