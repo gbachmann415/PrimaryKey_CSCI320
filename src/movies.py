@@ -541,8 +541,8 @@ def top_5_new_releases():
         result_list.append(dict(zip(
             ['movie_id', 'title', 'mpaa_rating', 'runtimeHr', 'runtimeMin', 'releaseDate', 'rating', 'lastWatched']
             , record)))
-    for i in range(0, len(result_list)):
-        result_list[i]['rating'] = round(result_list[i]['rating'], 2)
+    # for i in range(0, len(result_list)):
+    #     result_list[i]['rating'] = round(result_list[i]['rating'], 2)
 
     # Close the Database Cursor and Connection
     curs.close()
