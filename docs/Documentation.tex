@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{listings}
+\usepackage{hyperref}
 
 \lstset{frame=tb,
   language=SQL,
@@ -33,15 +34,18 @@ aew1756: Ari Wisenburn\\
 Our domain is the Movie Domain which will follow a very similar outline as the Music domain. Rather than users creating collections of music, it will be of movies instead. Users will be able to create collections of movies and search for movies based off of name, release date, cast members, studio, and genre. Users will also be able to sort movies, add and delete movies from their collection, rate movies, and even watch movies individually (or play an entire collection). Following and unfollowing friends will function the same as our primary domain.
 
 Our program will be primarily written in Python and we will be using a PostgreSQL database. User interaction will be driven through a Python-based GUI.
-
 \section{Design}
 \subsection{Conceptual Model}
-\includegraphics[scale=0.75]{ERDiagram.pdf} \\
+\begin{center}
+\includegraphics[scale=0.75]{ERDiagram.pdf}
+\end{center}
 Most of our ER Diagram is created directly from the requirements. \\\\
 The biggest consideration made was the inclusion of the \emph{Genre} entity. This allows us to re-use genres between movies without re-creating on that already exists keeping our database in 3NF. \\\\
 Another consideration of the table, was the inclusion of the \emph{Date Watched} attribute in the \emph{Watches} relationship. The requirements mention that in Phase 4, we need to be able to find the most popular movies in the past 90 days as well as allow users to mark every time they play a movie, we decided to include the date they marked the movie as watched to allow us to easily perform these queries as well as have multiple entries for the same movie from the same user. \\\\
 \subsection{Reduction to tables}
-\includegraphics[scale=0.75]{reduction to tables.pdf} \\
+\begin{center}
+\includegraphics[scale=0.75]{reduction to tables.pdf}
+\end{center}
 For the \emph{Person} entity, this comprises only of a \emph{Person Id} and a \emph{Name Id} for an individual with the \emph{Person Id} as the primary key and \emph{Name Id} as a foreign key to the \emph{Name} table. Looking at the relationships with the \emph{Person} entity, \emph{Acts In} became its own table since it is an N:M relationship while \emph{Directs} turned into the field \emph{Director Id} within the \emph{Movie} table since movies can only have a single director. The primary key for the \emph{ActsIn} table is a combination of the \emph{Movie Id} and \emph{Person Id} since these two elements will always be unique together.\\\\
 Regarding the \emph{Name} table, since \emph{Name} is a composite attribute made up of \emph{First Name} and \emph{Last Name}, it was split off into its own table. \\\\
 Moving forward to the \emph{Movie} entity itself, the \emph{Average User Rating} was disregarded in the table since it is a derived attribute and will be calculated when needed. \emph{Genre} has also been given its own entity type since multiple movies can have the same genre. The \emph{Classifies} relationship connects \emph{Genre} and \emph{Movie} with its primary key comprising of \emph{Genre Id} and \emph{Movie Id}. \\\\
@@ -63,7 +67,6 @@ Lastly, for the \emph{User} entity, the \emph{Username} and \emph{Email} attribu
 \emph{3, Ari, Wisenburn} \\
 \emph{4, Gunnar, Bachmann} \\
 \emph{5, Noah, Pelletier}
-
 \subsubsection{Acts In Relationship}
 Person \emph{Milo Berry} acts in Movie \emph{1917} \\
 Person \emph{Ari Wisenburn} acts in Movie \emph{1917} \\
@@ -154,8 +157,8 @@ Movie \emph{Make Happy} comprises Collection \emph{Funny Comedies} \\
 Movie \emph{The Addams Family} comprises Collection \emph{Funny Comedies} \\
 Movie \emph{Homeward Bound} comprises Collection \emph{Dog Movies} \\
 Movie \emph{Scream} comprises Collection \emph{Horror Movies} 
-
 \section{Implementation}
+\subsection{Table Creation and Data Addition}
 \begin{lstlisting}
 create table p320_21.movie
 (
@@ -205,7 +208,7 @@ create table p320_21.name
 create unique index name_id_uindex
     on p320_21.name (id);
 \end{lstlisting}
-For the 2 databases, \emph{Name} and \emph{Collection}, that would be added to in the application with unique ids with the \emph{serial} attribute allowing us to easily add to these tables without finding the previously added id and increment it to insert new data. 
+For the 2 databases, \emph{Name} and \emph{Collection}, which would be added to in the application with unique ids, we added the \emph{serial} attribute allowing us to easily add to these tables without finding the previously added id and increment it to insert new data. 
 
 To upload data to our tables, we first sanitized and processed the data set we selected as well as creating dummy data for values that did not exist within that dataset. We then downloaded this sanitized data into separate CSV files for each table. We then used DataGrip's built in import CSV file to table functionality. We started with the tables that had no foreign keys: \emph{Name}, \emph{Genre}, and \emph{Studio}. Then we moved to the two entities with foreign keys \emph{Person} and \emph{Movie}. Then, we populated the relationship tables \emph{ActsIn}, \emph{Funds}, and \emph{MovieGenre}. If we had used insert statements, they would be similar to:
 \begin{lstlisting}
@@ -243,8 +246,7 @@ INSERT INTO p320_21.watched(username, movie_id, date_watched) VALUES ('test_user
 INSERT INTO p320_21.name(first_name, last_name) VALUES ('Milo', 'Berry') RETURNING id;
 INSERT INTO p320_21.name(first_name, last_name) VALUES ('Gunnar', 'Bachman') RETURNING id;
 \end{lstlisting}
-
-% – contains sample queries (2 for each table) for populating the data
+\subsection{Example Queries}
 Here are a list of example queries we made to populate data in our application:
 \begin{lstlisting}
 -- Name
@@ -288,69 +290,270 @@ SELECT movie_id FROM p320_21.watched WHERE username = 'test_user';
 SELECT rating FROM p320_21.watched WHERE username = 'test user' and movie_id = 1;
 \end{lstlisting}
 %Finally, add an appendix of all the SQL statements created in your application during Phase 4 and a description of the indexes created to boost the performance of your application.
+\subsection{Indices}
+Besides the indexes that are automatically added to the primary keys of a table by PostgreSQL, we added indices to \emph{title} and \emph{release date} on \emph{Movie}, \emph{name Id} on \emph{Person}, \emph{name} on \emph{Studio}, \emph{email} on \emph{User}, \emph{name} on \emph{Genre}, and \emph{star rating} on \emph{Watched}.
+
+We decided to add the \emph{title}, \emph{release date}, \emph{Person} \emph{name id}, \emph{Genre} \emph{name}, and \emph{Studio} \emph{name} in order to speed up the search functionality. Each of these fields where used to search movies: title of the movie, release date of the film, actor's names that were in the film, genre name, and studio name. In a similar vein, we added the \emph{email} index on the \emph{User} table because users are able to search for other users by their email address.
+
+The last index we added was for the \emph{star rating} on the \emph{Watched} table. This was added to speed up the user profile functionality. Since the user has an option to see their highest rated films, we added an index to the ratings.
+\subsection{Appendix of SQL Statements Used in Phase 4}
+\subsubsection{Indices}
+\begin{lstlisting}
+CREATE INDEX collection_username_index ON p320_21.collection (username);
+CREATE INDEX genre_name_index ON p320_21.genre (name);
+CREATE INDEX movie_title_index ON p320_21.movie (title);
+CREATE INDEX movie_release_date_index ON p320_21.movie (release_date);
+CREATE INDEX person_name_id_index ON p320_21.person (name_id);
+CREATE INDEX studio_name_index ON p320_21.studio (name);
+CREATE INDEX user_email_index ON p320_21."user" (email);
+CREATE INDEX watched_star_rating_index ON p320_21.watched (star_rating);
+\end{lstlisting}
+\subsubsection{Recommendation System}
+\begin{lstlisting}
+-- View for the users top watched genres
+CREATE VIEW p320_21.user_top_genre AS
+with genre_rank as(
+SELECT username,
+    name as Genre,
+    count(name) as count,
+    row_number() over (partition by username order by count(name) desc) as row_num
+FROM p320_21.watched
+LEFT JOIN p320_21.movie_genre ON watched.movie_id = movie_genre.movie_id
+LEFT JOIN p320_21.genre ON movie_genre.genre_id = genre.genre_id
+group by username, name
+order by count desc)
+
+-- Top 20 most popular movies in the last 90 days (rolling)
+SELECT watched.movie_id,
+    title,
+    mpaa_rating,
+    runtime / 60 AS hours,
+    runtime % 60 AS minutes,
+    to_char(release_date, 'yyyy-MM-dd'),
+    avg(star_rating),
+    to_char(MAX(date_watched), 'yyyy-MM-dd'),
+    COUNT(watched.movie_id)
+FROM p320_21.watched
+LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+WHERE date_watched > current_date - interval '90' day
+GROUP BY watched.movie_id, title, mpaa_rating, hours, minutes, release_date
+ORDER BY COUNT(watched.movie_id) DESC
+LIMIT 20;
+
+-- Top 20 most popular movies among my friends
+SELECT DISTINCT watched.movie_id,
+    title,
+    mpaa_rating,
+    runtime / 60 AS hours,
+    runtime % 60 AS minutes,
+    to_char(release_date, 'yyyy-MM-dd'),
+    avg(star_rating),
+    to_char(MAX(date_watched), 'yyyy-MM-dd'),
+    COUNT(watched.movie_id)
+FROM p320_21.following
+LEFT JOIN p320_21.watched ON following.following_username = watched.username
+LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+WHERE following.username = 'username'
+GROUP BY watched.movie_id, title, mpaa_rating, hours, minutes, release_date, star_rating
+ORDER BY COUNT(watched.movie_id) DESC
+LIMIT 20;
+
+-- Top 5 new releases of the month
+SELECT watched.movie_id,
+    title,
+    mpaa_rating,
+    runtime / 60 AS hours,
+    runtime % 60 AS minutes,
+    to_char(release_date, 'yyyy-MM-dd'),
+    avg(star_rating),
+    to_char(MAX(date_watched), 'yyyy-MM-dd')
+FROM p320_21.watched
+LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+WHERE release_date > current_date - interval '1' month
+GROUP BY watched.movie_id, title, mpaa_rating, runtime / 60, runtime % 60, to_char(release_date, 'yyyy-MM-dd'), star_rating
+ORDER BY COUNT(watched.movie_id) DESC, star_rating DESC
+LIMIT 5;
+
+-- For you: Recommend movies to watch based on your play history (e.g. genre, -- cast member, rating) and the play history of similar users
+WITH user_genre AS (SELECT username, genre_id FROM p320_21.user_top_genre WHERE username = 'username' OR
+username IN (SELECT following_username
+FROM p320_21.following
+WHERE username = '{username}'))
+SELECT DISTINCT movie.movie_id,
+    title,
+    mpaa_rating,
+    runtime / 60 AS hours,
+    runtime % 60 AS minutes,
+    to_char(release_date, 'yyyy-MM-dd'),
+    avg(star_rating),
+    to_char(MAX(date_watched), 'yyyy-MM-dd'),
+    COUNT(watched.movie_id)
+FROM user_genre
+LEFT JOIN p320_21.movie_genre ON user_genre.genre_id = movie_genre.genre_id
+LEFT JOIN p320_21.movie ON movie_genre.movie_id = movie.movie_id
+LEFT JOIN p320_21.watched ON movie.movie_id = watched.movie_id
+WHERE movie_genre.genre_id = user_genre.genre_id and star_rating is not null
+GROUP BY movie.movie_id, title, mpaa_rating, runtime / 60, runtime % 60, to_char(release_date, 'yyyy-MM-dd')
+ORDER BY COUNT(watched.movie_id) DESC
+LIMIT 20;
+\end{lstlisting}
+\subsubsection{User Profile Functionality}
+\begin{lstlisting}
+-- Number of collections a user has
+SELECT COUNT(DISTINCT collection_id)
+FROM p320_21.collection
+WHERE username = 'username';
+
+-- Number of followers
+SELECT COUNT(DISTINCT username)
+FROM p320_21.following
+WHERE following_username = 'username';
+
+-- Number of following
+SELECT COUNT(DISTINCT following_username)
+FROM p320_21.following
+WHERE username = 'username';
+
+-- Top 10 movies (by highest rating)
+SELECT DISTINCT watched.movie_id,
+    title,
+    mpaa_rating,
+    runtime / 60 AS hours,
+    runtime % 60 AS minutes,
+    to_char(release_date, 'yyyy-MM-dd'),
+    star_rating,
+    to_char(MAX(date_watched), 'yyyy-MM-dd')
+FROM p320_21.watched
+LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+WHERE username = 'username' AND star_rating IS NOT NULL
+GROUP BY watched.movie_id, title, mpaa_rating, hours, minutes, release_date, star_rating
+ORDER BY star_rating DESC
+LIMIT 10;
+
+-- Top 10 movies (most plays)
+SELECT DISTINCT watched.movie_id,
+    title,
+    mpaa_rating,
+    runtime / 60 AS hours,
+    runtime % 60 AS minutes,
+    to_char(release_date, 'yyyy-MM-dd'),
+    star_rating,
+    to_char(MAX(date_watched), 'yyyy-MM-dd'),
+    COUNT(watched.movie_id)
+FROM p320_21.watched
+LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+WHERE username = 'username' AND star_rating IS NOT NULL
+GROUP BY watched.movie_id, title, mpaa_rating, hours, minutes, release_date, star_rating
+ORDER BY COUNT(watched.movie_id) DESC
+LIMIT 10;
+
+-- Top 10 movies (Combination of highest rating and most plays)
+SELECT DISTINCT watched.movie_id,
+    title,
+    mpaa_rating,
+    runtime / 60 AS hours,
+    runtime % 60 AS minutes,
+    to_char(release_date, 'yyyy-MM-dd'),
+    star_rating,
+    to_char(MAX(date_watched), 'yyyy-MM-dd'),
+    COUNT(watched.movie_id)
+FROM p320_21.watched
+LEFT JOIN p320_21.movie ON watched.movie_id = movie.movie_id
+WHERE username = 'username' AND star_rating IS NOT NULL
+GROUP BY watched.movie_id, title, mpaa_rating, hours, minutes, release_date, star_rating
+ORDER BY COUNT(watched.movie_id) DESC, star_rating DESC
+LIMIT 10;
+\end{lstlisting}
+\subsubsection{Data Analysis}
+\label{sec:analysissql}
+\begin{lstlisting}
+-- average rating per genre of movies in collections
+select g.name, ROUND(CAST(avg(star_rating) as numeric), 2) as average_rating
+from p320_21.movie
+left join p320_21.movies_in_collection as mc on movie.movie_id = mc.movie_id
+left join p320_21.movie_genre as mg on mg.movie_id = movie.movie_id
+left join p320_21.genre as g on g.genre_id = mg.genre_id
+left join p320_21.watched as w on w.movie_id = movie.movie_id
+where collection_id is not null
+and w.star_rating is not null
+group by g.name;
+
+--number of movies in each genre that have been added to collections
+select g.name, count(mc.movie_id)
+from p320_21.movie
+left join p320_21.movies_in_collection as mc on movie.movie_id = mc.movie_id
+left join p320_21.movie_genre as mg on mg.movie_id = movie.movie_id
+left join p320_21.genre as g on g.genre_id = mg.genre_id
+where collection_id is not null
+group by g.name;
+
+--average rating of top 10 actor (that have been in the most movies)'s movie
+select concat(n.first_name, ' ', n.last_name), (
+    select ROUND(cast(avg(w.star_rating) as numeric), 2)
+    from p320_21.movie
+    left join p320_21.watched as w on movie.movie_id = w.movie_id
+    left join p320_21.acts_in as a on movie.movie_id = a.movie_id
+    where w.movie_id is not null
+    and a.person_id = acts_in.person_id
+    group by person_id
+) as star_avg
+from p320_21.acts_in
+left join p320_21.movie m on m.movie_id = acts_in.movie_id
+left join p320_21.person p on acts_in.person_id = p.id
+left join p320_21.name n on p.name_id = n.id
+group by person_id, n.first_name, n.last_name
+order by count(person_id) desc
+limit 10;
+\end{lstlisting}
 \section{Data Analysis}
 \subsection{Hypothesis}
-Use this section to state the objectives of your data analysis; what are the observations you are expecting to find. Note that your final
-observations may end up differing from your proposal, that is also a valid result.
+We wanted to know the most popular genres and actors within the application. This would allow us to determine which films to add to the application in the future and guide some decisions on which movies to feature or promote. Since the genres were taken from the \hyperref[sec:ref]{Kaggle data}, we except the most popular genres to be drama, comedy, and romance.
 \subsection{Data Preprocessing}
-Use this section to describe the preprocessing steps you have performed to prepare the data for the analytics. Preprocessing steps may include: data cleaning (e.g., filling missing values, fixing outliers), formatting the data (e.g., resolving issues like inconsistent abbreviations, multiples date format in the data), combining or splitting fields, add new information (data enrichness).
+Most of our data preprocessing involved filling in missing data or adding more data. Since most of our analytics depended on user functionality, we need to add more instances of users watching and rating movies. This was especially important for our average movie rating of top ten actors since 4 of them lacked any rating data.
 
-Explain how the data was extracted from the database for the analysis; if you used complex queries or views, or both.
+Our data was valid and consistent since we had sanitized it before entering it into the database in the previous phase. We ran into few formatting issues but these were just converting dates with timestamps to just dates.
+
+In order to get the data, we used the \hyperref[sec:analysissql]{previous section's} SQL query statements and saved the results as CSVs using DataGrip's save query result as CSV functionality. We then imported these CSVs into an Excel file to further process the data.
 \subsection{Data Analytics \& Visualization}
-Use this section to explain the process/techniques used to analyze the data, use data visualization to present the results, and explain them.
-\subsection{Conclusions}
-Use this section to explain the conclusions drawn from your data analysis.\\
-\section{Lessons Learned}
-Use this section to describe the issues you faced during the project and how you overcame them. Also, describe what you learned during this effort; this section, like the others, plays a critical component in determining your final grade.\\
-
-{\bf The next subsection is meant to provide you with some help in
-  dealing with figures, tables and references, as these are sometimes
-  hard for folks new to \LaTeX. Your figures and tables
-  may be distributed all over your paper (not just here), as appropriate for your paper.
-
-  Please delete the following subsection before you make any submissions!}
-
-\subsection{Tables, Figures, and Citations/References}
-
-Tables, figures, and references in technical
-documents need to be presented correctly. As many students
-are not familiar with using these objects, here is a quick
-guide extracted from the ACM style guide.
-
-\begin{table}
-\centering
-\caption{Feelings about Issues}
-\label{SAMPLE TABLE}
-\begin{tabular}{|l|r|l|} \hline
-Flavor&Percentage&Comments\\ \hline
-Issue 1 &  10\% & Loved it a lot\\ \hline
-Issue 2 &  20\% & Disliked it immensely\\ \hline
-Issue 3 &  30\% & Didn't care one bit\\ \hline
-Issue 4 &  40\% & Duh?\\ \hline
-\end{tabular}
-\end{table}
-
-
-First, note that figures in the report must be original, that is,
-created by the student: please do not cut-and-paste figures from any
-other paper or report you have read or website. Second, if you do need to include figures,
-they should be handled as demonstrated here. State that
-Figure~\ref{SAMPLE FIGURE} is a simple illustration used in the ACM
-Style sample document. Never refer to the figure below (or above)
-because figures may be placed by \LaTeX{} at any appropriate location
-that can change when you recompile your source $.tex$
-file. Incidentally, in proper technical writing (for reasons beyond
-the scope of this discussion), table captions are above the table and
-figure captions are below the figure. So the truly junk information
-about flavors is shown in Table~\ref{SAMPLE TABLE}.
-
-\begin{figure}[htb]
+To analyze our data, we started by creating three separate bar charts to initially visualize the data
 \begin{center}
-\includegraphics[width=1.5in]{images/fly.jpg}
-\caption{A sample black \& white graphic (JPG).}
-\label{SAMPLE FIGURE}
+\includegraphics[scale=0.70]{Average Rating of Top 10 Actors.png}
 \end{center}
-\end{figure}
+\begin{center}
+\includegraphics[scale=0.70]{Number of Movies in Collection by Genre.png}
+\end{center}
+\begin{center}
+\includegraphics[scale=0.70]{Average Rating of Movies in Each Genre.png}
+\end{center}
+Which indicated to us that historical and superhero movies were by far the most popular with over 20 films in collections while the other genres barely broke 10. Ratings-wise, fantasy and crime were the highest rated, but these values were much closer.
+
+So from this point we calculated the standard deviation of both datasets finding the standard deviation of the ratings (\(\approx 0.425\)) was lower than the standard deviation of the count (\(6.218\)).
+
+For the actor's rating chart, the results were fairly straightforward. If given more time, we could have extended the data in this to include the genres they acted in and see the correlation between their top genres and their ratings in comparison to the genre's overall rating, but we decided to focus on the genres themselves for this analysis.
+
+These charts also generated interest in further exploring the relationship between average rating of a genre versus the number of movies for that genre in collections. So we created the following graph:
+\begin{center}
+\includegraphics[scale=0.70]{Genre_ Count vs. Rating.png}
+\end{center}
+As well as calculated the correlation coefficient between the two values, getting the result of \(\approx 0.025\), which indicates there is a slight positive relationship between the two values (the more movies within the genre that are in collections, the higher the average rating will be) but the relationship is very weak. 
+
+From this point, we also wanted to see the percentage breakdown of movie genres within collections and created the following graph: 
+\begin{center}
+\includegraphics[scale=0.70]{Percentage of Movie Genres in Collections.png}
+\end{center}
+Which indicated that the genre breakdown was less intense than it appeared in the previous graph, but still present enough to note.
+\subsection{Conclusions}
+Overall, we found the most common genre to be superhero movies and the most well liked genre to be fantasy. The slight correlation between number of films and rating is interesting, but not particularly useful in determining what films to add to the database. If we had to add more films, I would recommend looking the number of films added within a genre rather the the ratings of a specific genre. 
+Our predictions about which genres would be the most popular did not turn out to be true, which makes sense as we randomly added movies to collections rather than real users. In a real-world scenario, this could indicate that our users are not interested in most of the films in our database and we should add more films within their top genres.
+
+Which leads to a large issue with our results, our lack of extensive data also skewed the analysis of this slightly; in a real-world scenario, there would probably be a stronger correlation between average rating of a genre and the number of films within a collection and the genre rating breakdown would not be as tight-knit as it is. Although, the lack of data did help us with pre-processing since we did not have to have intensive data review activities.
+\section{Lessons Learned}
+Overall, we all become much more comfortable with SQL and manipulating complex databases. Queries that would take us an hour to write in the 3rd phase, only took 15 minutes in the 4th phase.
+
+We also learned first hand how overly dividing data can lead to unnecessary complexity. For this project specifically, dividing the actors' names into a separate table was the "correct" choice, it led to our queries to get an actor in a movie to involve joining three separate tables and a larger learning curve for explaining how our application works.
+
+The next biggest issue we faced was the UI implementation. While it was not an explicit requirement of the application, the user (us mostly) still had to interface with the application. Trying to decide what UI issues were necessary to solve and which were not was something that required a lot of thought that we hadn't anticipated going in. The UI also brought some extra code changes that were not initially in the requirements. Because of how the UI worked, we prevented users from having multiple collections with the same names which technically falls outside of the expected application behavior. Overall, given another chance, we should have started the UI sooner in order to alleviate some of the issues we had with it from impacting the phase.
 \section{Resources}
-The dataset we used to populate our \emph{Movie} data table was https://www.kaggle.com/kaushikmetha/imdb-movies?select=imdb\_cleaned.csv. All other data was randomly generated.
+\label{ref}
+The dataset we used to populate our \emph{Movie} data table was \href{ https://www.kaggle.com/kaushikmetha/imdb-movies?select=imdb\_cleaned.csv}{from Kaggle}. All other data was randomly generated.
 \end{document}
